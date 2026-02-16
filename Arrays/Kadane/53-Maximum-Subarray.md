@@ -1,26 +1,58 @@
 
-
 # 53. Maximum Subarray
 
-> 🔎 Pattern: Kadane’s Algorithm  
+> 🔎 Pattern: Kadane's Algorithm  
 > 📂 Topic: Arrays  
 > 🏷️ Difficulty: Medium  
 
 
+## 📌 Problem
+Find the contiguous subarray with the largest sum.
+
+---
+
 ## 💡 Key Idea
 
 At each index:
-- Extend previous subarray
-- OR start new from current element
+- Either extend previous subarray
+- Or start fresh from current element
 
 currentSum = max(nums[i], currentSum + nums[i])
 
 ---
 
-## 🧠 Insight
+## 🧠 Why This Works
 
-If currentSum becomes negative, it hurts future sums.
-So we drop it.
+If currentSum becomes negative:
+- It will reduce future sums
+- So restart from current element
+
+---
+
+## ⚙️ Algorithm
+
+1. Initialize currentSum and maxSum with nums[0]
+2. Traverse array:
+   - currentSum = max(nums[i], currentSum + nums[i])
+   - maxSum = max(maxSum, currentSum)
+
+---
+
+## 🧪 Dry Run
+
+`[-2,1,-3,4,-1,2,1,-5,4]`
+
+| i | num | currentSum | maxSum |
+|---|-----|------------|--------|
+|0|-2|-2|-2|
+|1|1|1|1|
+|2|-3|-2|1|
+|3|4|4|4|
+|4|-1|3|4|
+|5|2|5|5|
+|6|1|6|6|
+
+Answer = 6
 
 ---
 
@@ -29,6 +61,17 @@ O(n)
 
 ## 📦 Space Complexity
 O(1)
+
+---
+
+## ⚠️ Common Mistakes
+- Initializing maxSum to 0.
+- Not handling all-negative arrays.
+
+---
+
+## 🎯 Interview One-Liner
+Kadane’s algorithm keeps track of best subarray ending at each index.
 
 ---
 
@@ -45,6 +88,7 @@ public:
             currentSum = max(nums[i], currentSum + nums[i]);
             maxSum = max(maxSum, currentSum);
         }
+
         return maxSum;
     }
 };
