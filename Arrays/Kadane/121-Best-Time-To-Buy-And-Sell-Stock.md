@@ -1,0 +1,83 @@
+
+# 121. Best Time to Buy and Sell Stock
+
+> 🔎 Pattern: Greedy / Kadane Variant  
+> 📂 Topic: Arrays  
+> 🏷️ Difficulty: Easy  
+
+---
+
+## 📌 Problem
+Find maximum profit from one buy and one sell.
+
+---
+
+## 💡 Key Idea
+
+Track minimum price so far.
+At each day:
+profit = price - minPrice
+
+---
+
+## ⚙️ Algorithm
+
+1. Initialize minPrice = prices[0]
+2. For each price:
+   - Update minPrice
+   - Compute profit
+   - Update maxProfit
+
+---
+
+## 🧪 Dry Run
+
+`[7,1,5,3,6,4]`
+
+| Day | Price | minPrice | profit | maxProfit |
+|-----|-------|----------|--------|-----------|
+|0|7|7|0|0|
+|1|1|1|0|0|
+|2|5|1|4|4|
+|4|6|1|5|5|
+
+Answer = 5
+
+---
+
+## ⏱️ Time Complexity
+O(n)
+
+## 📦 Space Complexity
+O(1)
+
+---
+
+## ⚠️ Common Mistakes
+- Buying after selling.
+- Using nested loops.
+
+---
+
+## 🎯 Interview One-Liner
+Track minimum price so far and compute max profit in one pass.
+
+---
+
+## 💻 Code
+
+```cpp
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int minPrice = prices[0];
+        int maxProfit = 0;
+
+        for (int i = 1; i < prices.size(); i++) {
+            minPrice = min(minPrice, prices[i]);
+            maxProfit = max(maxProfit, prices[i] - minPrice);
+        }
+
+        return maxProfit;
+    }
+};
