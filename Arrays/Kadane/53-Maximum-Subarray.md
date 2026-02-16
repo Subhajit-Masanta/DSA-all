@@ -1,4 +1,4 @@
----
+
 
 # 53. Maximum Subarray
 
@@ -6,7 +6,6 @@
 > 📂 Topic: Arrays  
 > 🏷️ Difficulty: Medium  
 
----
 
 ## 💡 Key Idea
 
