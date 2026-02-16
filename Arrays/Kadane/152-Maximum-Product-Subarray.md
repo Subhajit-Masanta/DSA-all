@@ -6,22 +6,46 @@
 > 🏷️ Difficulty: Medium  
 
 
-## 💡 Key Idea
-
-Track both:
-- maxProd
-- minProd
-
-Because negative × negative = positive.
+## 📌 Problem
+Find contiguous subarray with maximum product.
 
 ---
 
-## 🧠 Why Swap When nums[i] < 0?
+## 💡 Key Idea
+
+Track both:
+- maxProd (maximum product ending here)
+- minProd (minimum product ending here)
+
+Because:
+Negative × Negative = Positive
+
+---
+
+## 🧠 Why Swap When nums[i] < 0 ?
 
 Multiplying by negative flips signs.
-Previous minProd can become new maxProd.
+Previous minimum can become maximum.
+So swap maxProd and minProd.
 
-So swap before updating.
+---
+
+## ⚙️ Algorithm
+
+1. Initialize maxProd, minProd, answer = nums[0]
+2. For each element:
+   - If negative → swap(maxProd, minProd)
+   - Update maxProd
+   - Update minProd
+   - Update answer
+
+---
+
+## 🧪 Dry Run
+
+`[2,-5,-2,-4,3]`
+
+Correct Answer = 24
 
 ---
 
@@ -30,6 +54,18 @@ O(n)
 
 ## 📦 Space Complexity
 O(1)
+
+---
+
+## ⚠️ Common Mistakes
+- Only tracking max product.
+- Forgetting swap when negative.
+- Not handling zero.
+
+---
+
+## 🎯 Interview One-Liner
+Track both maximum and minimum product because sign flips matter.
 
 ---
 
