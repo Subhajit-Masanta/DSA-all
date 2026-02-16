@@ -6,37 +6,45 @@
 
 ---
 
-## 💡 Key Idea
-
-Maintain four regions:
-
-[0 … low-1] → 0s  
-[low … mid-1] → 1s  
-[mid … high] → unknown  
-[high+1 … n-1] → 2s  
+## 📌 Problem
+Sort an array containing only 0s, 1s, and 2s in-place.
 
 ---
 
-## ⚙️ Algorithm
+## 💡 Key Idea
 
-If nums[mid] == 0:
-- swap(low, mid)
-- low++, mid++
+Maintain three regions:
 
-If nums[mid] == 1:
-- mid++
-
-If nums[mid] == 2:
-- swap(mid, high)
-- high--
-- DO NOT increment mid
+[0 ... low-1] → 0s  
+[low ... mid-1] → 1s  
+[mid ... high] → unknown  
+[high+1 ... n-1] → 2s  
 
 ---
 
 ## 🧠 Why Not Increment mid When nums[mid] == 2?
 
-Because the element swapped from high is unprocessed.
-Incrementing mid would skip checking it.
+After swapping with high:
+- The element coming to mid is unprocessed.
+- We must check it again.
+
+---
+
+## ⚙️ Algorithm
+
+1. Initialize low = 0, mid = 0, high = n-1
+2. While mid <= high:
+   - If nums[mid] == 0 → swap(low, mid), low++, mid++
+   - If nums[mid] == 1 → mid++
+   - If nums[mid] == 2 → swap(mid, high), high--
+
+---
+
+## 🧪 Dry Run
+
+`[2,0,2,1,1,0]`
+
+Final → `[0,0,1,1,2,2]`
 
 ---
 
@@ -45,6 +53,17 @@ O(n)
 
 ## 📦 Space Complexity
 O(1)
+
+---
+
+## ⚠️ Common Mistakes
+- Incrementing mid when nums[mid] == 2
+- Forgetting loop condition mid <= high
+
+---
+
+## 🎯 Interview One-Liner
+Use three pointers to partition 0s, 1s, and 2s in one pass.
 
 ---
 
@@ -58,13 +77,16 @@ public:
 
         while (mid <= high) {
             if (nums[mid] == 0) {
-                swap(nums[low++], nums[mid++]);
+                swap(nums[low], nums[mid]);
+                low++;
+                mid++;
             }
             else if (nums[mid] == 1) {
                 mid++;
             }
             else {
-                swap(nums[mid], nums[high--]);
+                swap(nums[mid], nums[high]);
+                high--;
             }
         }
     }
