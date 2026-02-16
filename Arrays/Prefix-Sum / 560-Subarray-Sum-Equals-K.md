@@ -1,10 +1,4 @@
----
 
----
-
-# 📂 Arrays / Prefix-Sum / 08-Subarray-Sum-Equals-K.md
-
-```md
 # 560. Subarray Sum Equals K
 
 > 🔎 Pattern: Prefix Sum + HashMap  
