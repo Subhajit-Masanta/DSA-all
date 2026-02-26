@@ -1,68 +1,122 @@
-# 918. Maximum Sum Circular Subarray
+918. Maximum Sum Circular Subarray
+Topic	Difficulty	Pattern
+Arrays	Medium	Kadane's Algorithm + Circular Logic
+📌 Problem Description
 
-| Topic | Difficulty | Pattern |
-| :--- | :--- | :--- |
-| Arrays | Medium | Kadane's Algorithm + Circular Logic |
+Given a circular integer array nums of length n, return the maximum possible sum of a non-empty subarray.
 
----
+🔄 Circular Property
 
-## 📌 Problem Description
-Given a **circular integer array** `nums` of length `n`, return the maximum possible sum of a non-empty subarray of `nums`.
+The end of the array connects back to the beginning.
 
-**Circular Property:**
-- The end of the array connects back to the beginning.
-- Each element can be used at most once in a subarray.
+Each element can be used at most once in a subarray.
 
----
+🧠 Core Concept — Two-Case Logic
 
-## 🧠 Core Concept: The Two-Case Logic
+The maximum sum must be in one of two cases:
 
-The maximum sum can only exist in one of two scenarios:
+1️⃣ Normal (Linear) Maximum Subarray
 
-### 1. The "Standard" Case (Linear)
-The maximum subarray does **not** wrap around. It stays within the bounds of the original indices $[0, n-1]$.
-- **Solution:** Standard Kadane’s Algorithm.
+The subarray does not wrap around.
 
-### 2. The "Circular" Case (Wrapping)
-The maximum subarray wraps around the end of the array. This means the **minimum** subarray must be located somewhere in the middle.
-- **Solution:** `Total Array Sum - Minimum Subarray Sum`.
+Use Kadane’s Algorithm
 
+Let this be maxSum
 
+2️⃣ Circular (Wrapping) Maximum Subarray
 
----
+The subarray wraps from end → beginning.
 
-## ⚙️ The Algorithm
+Instead of directly finding it:
 
-1.  **Calculate Total Sum:** Sum of all elements in the array.
-2.  **Find Global Maximum ($maxSum$):** Standard Kadane's to find the best linear subarray.
-3.  **Find Global Minimum ($minSum$):** Modified Kadane's to find the worst linear subarray.
-4.  **Handle the All-Negative Edge Case:** If all numbers are negative, `maxSum` will be the least negative number, while `totalSum - minSum` would equal 0 (an empty subarray, which is not allowed).
+Circular Max = Total Sum − Minimum Subarray
 
-### 🧠 Final Formula
-$$
-\text{result} = 
-\begin{cases} 
-maxSum & \text{if } maxSum < 0 \\
-\max(maxSum, totalSum - minSum) & \text{otherwise}
-\end{cases}
-$$
+Why?
 
----
+If we remove the minimum subarray (worst middle part)
+we are left with the maximum circular segment.
 
-## 🧪 Example Walkthrough
-**Input:** `[5, -3, 5]`
+Let:
 
-* **Total Sum:** $5 + (-3) + 5 = 7$
-* **Max Subarray (Kadane):** $[5, -3, 5]$ is not contiguous in a linear sense for sum 10, but linear Kadane finds `5` or `5`. Actually, for `[5, -3, 5]`, the $maxSum$ is $7$ if we don't wrap.
-* **Min Subarray:** `[-3]`, so $minSum = -3$.
-* **Circular Calculation:** $7 - (-3) = 10$.
-* **Final Answer:** $\max(7, 10) = 10$.
+minSum = minimum subarray (Kadane inverted)
 
----
+totalSum = sum of entire array
 
-## 💻 Implementation (C++)
+⚙️ Algorithm Steps
 
-```cpp
+Compute totalSum
+
+Run Kadane to get:
+
+maxSum
+
+minSum
+
+Edge case:
+
+If all numbers are negative → return maxSum
+
+Otherwise:
+
+return max(maxSum, totalSum - minSum);
+🧠 Final Formula
+if (maxSum < 0)
+    return maxSum;
+else
+    return max(maxSum, totalSum - minSum);
+🧪 Example 1 — Circular Wins
+
+Input
+
+[5, -3, 5]
+
+Calculation
+
+Total Sum = 7
+maxSum = 7
+minSum = -3
+Circular = 7 - (-3) = 10
+
+Answer
+
+10
+🧪 Example 2 — All Negative
+
+Input
+
+[-3, -2, -3]
+
+Calculation
+
+Total Sum = -8
+maxSum = -2
+minSum = -8
+Circular = 0 ❌ (invalid empty subarray)
+
+Since all numbers are negative:
+
+Answer = -2
+⏱️ Complexity
+Type	Complexity
+Time	O(n)
+Space	O(1)
+⚠️ Common Mistakes
+
+❌ Simulating circular array using modulo
+
+❌ Forgetting totalSum
+
+❌ Using maxSum - minSum
+
+❌ Ignoring all-negative case
+
+❌ Thinking circular means only first + last element
+
+🎯 Interview One-Liner
+
+Compute normal maximum subarray and circular maximum using totalSum − minimum subarray, then return the larger one.
+
+💻 C++ Implementation
 class Solution {
 public:
     int maxSubarraySumCircular(vector<int>& nums) {
@@ -74,18 +128,16 @@ public:
 
         for (int x : nums) {
             totalSum += x;
-            
-            // Standard Kadane's (Max)
+
             currentMax = max(x, currentMax + x);
             maxSum = max(maxSum, currentMax);
-            
-            // Reverse Kadane's (Min)
+
             currentMin = min(x, currentMin + x);
             minSum = min(minSum, currentMin);
         }
 
-        // Edge case: If all elements are negative, maxSum is the answer
-        if (maxSum < 0) return maxSum;
+        if (maxSum < 0)
+            return maxSum;
 
         return max(maxSum, totalSum - minSum);
     }
