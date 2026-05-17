@@ -1,70 +1,90 @@
-# 🔍 35. Search Insert Position
+# 🔍 Search Insert Position
 
 | Topic | Difficulty | Pattern |
 | :--- | :--- | :--- |
-| Binary Search | Easy | Lower Bound |
+| Arrays | Easy | Binary Search |
 
 ---
 
-## 📌 Problem Description
+# 📌 Problem Description
 
-Given a sorted array of distinct integers `nums` and a target value `target`:
+Given a sorted array of distinct integers and a target value:
 
-- Return the index if target exists
-- Otherwise return the index where it should be inserted
+- Return the index if the target exists.
+- Otherwise return the index where it should be inserted.
 
-Constraint:
-- Must run in `O(log n)`
-
----
-
-## 🧠 Core Insight
-
-This is NOT just normal binary search.
-
-This problem is actually asking for:
-
-> Find the first position where value >= target
-
-This is the **Lower Bound** pattern.
+Must run in **O(log n)** time.
 
 ---
 
-## 🔥 Key Observation
+# 🧠 Core Insight
 
-If target is not found:
+This problem is basically:
 
-- insertion position = first element greater than target
-- OR position where target should exist
+> Find the first position where `target` can fit while maintaining sorted order.
 
-At the end of binary search:
-
-```cpp
-low == insertion position
-```
-
-So we can directly return `low`.
+Binary Search helps because the array is sorted.
 
 ---
 
-## ⚙️ Algorithm
+# 🔥 Key Observation
+
+Whenever:
+- `nums[mid] < target`
+  → target must be on the **right side**
+
+- `nums[mid] > target`
+  → target can be inserted at `mid`
+  → continue searching left for a better position
+
+---
+
+# ⚙️ Algorithm
 
 1. Initialize:
    - `low = 0`
    - `high = n - 1`
 
 2. While `low <= high`:
-   - Find mid
-   - If `nums[mid] < target`
-     - search right
-   - Else
-     - search left
+   - Find `mid`
+   - If target found → return `mid`
+   - If target greater → move right
+   - Else → store possible answer and move left
 
-3. Return `low`
+3. Return insertion position
 
 ---
 
-## 🧪 Example
+# 🧪 ALL INSERTION SCENARIOS
+
+---
+
+# ✅ Case 1: Target Exists
+
+Input:
+```cpp
+nums = [1,3,5,6]
+target = 5
+```
+
+Process:
+``` id="mpzz3u"
+mid = 1 → nums[mid] = 3
+target > nums[mid]
+go right
+
+mid = 2 → nums[mid] = 5
+found
+```
+
+Output:
+```cpp
+2
+```
+
+---
+
+# ✅ Case 2: Insert Between Elements
 
 Input:
 ```cpp
@@ -72,179 +92,235 @@ nums = [1,3,5,6]
 target = 2
 ```
 
-Steps:
+Process:
+``` id="m9g83w"
+mid = 1 → nums[mid] = 3
 
-| low | high | mid | nums[mid] | Action |
-|---|---|---|---|---|
-| 0 | 3 | 1 | 3 | move left |
-| 0 | 0 | 0 | 1 | move right |
+target < nums[mid]
+possible insertion index = 1
 
-Loop ends:
-```cpp
-low = 1
+go left
 ```
 
-Insert position = `1`
+Target should be inserted before `3`.
+
+Output:
+```cpp
+1
+```
 
 ---
 
-## 🔥 Mental Model
+# ✅ Case 3: Insert At End
 
-Binary Search is not searching for value.
-
-It is searching for:
-
-> First valid position
-
-Here:
+Input:
 ```cpp
-nums[mid] >= target
+nums = [1,3,5,6]
+target = 7
 ```
 
-is the valid condition.
+Process:
+``` id="c3m0sv"
+mid = 1 → 3
+go right
+
+mid = 2 → 5
+go right
+
+mid = 3 → 6
+go right
+```
+
+Now:
+```cpp
+low = 4
+```
+
+Insertion position:
+```cpp
+4
+```
+
+Output:
+```cpp
+4
+```
 
 ---
 
-## ⚠️ Review of Your Code
+# ✅ Case 4: Insert At Beginning
 
-Your code works.
+Input:
+```cpp
+nums = [1,3,5,6]
+target = 0
+```
 
-But your thinking is weak here:
+Process:
+``` id="98zxul"
+mid = 1 → 3
+target < 3
 
+possible answer = 1
+go left
+
+mid = 0 → 1
+target < 1
+
+possible answer = 0
+```
+
+Output:
+```cpp
+0
+```
+
+---
+
+# 🔥 Understanding Your Logic
+
+---
+
+# 🟢 When `target > nums[mid]`
+
+Example:
+```cpp
+target = 7
+nums[mid] = 5
+```
+
+Meaning:
+- Target cannot be on left side
+- All left elements are smaller
+- Move right
+
+```cpp
+low = mid + 1;
+```
+
+Possible insertion:
+```cpp
+mid + 1
+```
+
+---
+
+# 🔴 When `target < nums[mid]`
+
+Example:
+```cpp
+target = 2
+nums[mid] = 3
+```
+
+Meaning:
+- Target can be inserted at `mid`
+- But maybe there exists a smaller valid index on left
+
+So:
+```cpp
+ans = mid;
+high = mid - 1;
+```
+
+---
+
+# ⚠️ Problem In Your Code
+
+Your code:
 ```cpp
 int ans;
 ```
 
-You are manually maintaining answer updates.
+This is dangerous.
 
-Unnecessary.
-
-This problem becomes MUCH cleaner if you understand:
-
+If array is empty:
 ```cpp
-return low;
+nums = []
 ```
 
-at the end.
+`ans` remains uninitialized.
 
----
-
-## ❌ Common Mistakes
-
-### 1. Maintaining extra `ans`
-Adds unnecessary complexity.
-
----
-
-### 2. Forgetting insertion can happen at end
-Example:
+Safer:
 ```cpp
-nums = [1,3,5]
-target = 7
+int ans = nums.size();
 ```
 
-Answer:
-```cpp
-3
-```
+Why?
+Because default insertion at end is always valid.
 
 ---
 
-### 3. Thinking this is exact-match binary search
-This is actually:
-> Lower Bound
+# ⚠️ Common Mistakes
 
-Very important distinction.
-
----
-
-## 🧠 Pattern Recognition
-
-This pattern is used in:
-
-- Lower Bound
-- Upper Bound
-- First Occurrence
-- Last Occurrence
-- Search Insert Position
+- Forgetting insertion at beginning
+- Forgetting insertion at end
+- Uninitialized `ans`
+- Using linear search instead of binary search
 
 ---
 
-## ⏱ Complexity
+# ⏱ Complexity
 
 - Time: `O(log n)`
 - Space: `O(1)`
 
 ---
 
-## 💻 Cleaner Code (C++)
+# 💻 Code (Improved)
 
 ```cpp
 class Solution {
 public:
     int searchInsert(vector<int>& nums, int target) {
-
         int low = 0;
         int high = nums.size() - 1;
 
-        while(low <= high) {
+        int ans = nums.size();
 
+        while(low <= high) {
             int mid = low + (high - low) / 2;
 
-            if(nums[mid] < target) {
+            if(nums[mid] == target) {
+                return mid;
+            }
+            else if(nums[mid] < target) {
                 low = mid + 1;
             }
             else {
+                ans = mid;
                 high = mid - 1;
             }
         }
 
-        return low;
+        return ans;
     }
 };
 ```
 
 ---
 
-## 🧠 One-Liner
+# 🧠 Pattern Recognition
 
-> Search for the first position where value becomes greater than or equal to target.
+This problem is actually:
+> Lower Bound of target
+
+Because:
+- We search first position where `nums[i] >= target`
 
 ---
 
-## 📓 Notebook Notes
+# 📓 Revision Notes
 
 ### Pattern:
-Lower Bound Binary Search
+Binary Search / Lower Bound
 
 ### Key Idea:
-Find first index where:
-```cpp
-nums[i] >= target
-```
+Find first valid insertion position
 
-### Trick:
-After loop:
-```cpp
-low = insertion position
-```
+### Important Logic:
+- smaller → go right
+- greater → possible answer, go left
 
 ### One-liner:
-Binary search on valid position, not exact value.
-
----
-
-## 🔥 Interview-Level Understanding Check
-
-Answer these before moving on:
-
-1. Why does returning `low` always work?
-2. Why do we move:
-```cpp
-high = mid - 1
-```
-even when target is found?
-3. What happens if array contains duplicates?
-
-If you cannot answer these clearly,
-you do NOT understand Lower Bound yet.
+Find first index where element is greater than or equal to target.
