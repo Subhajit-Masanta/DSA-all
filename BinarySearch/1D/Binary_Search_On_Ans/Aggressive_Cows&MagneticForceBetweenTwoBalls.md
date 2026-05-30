@@ -1,4 +1,4 @@
-# 🔍 Aggressive Cows
+# 🔍 Aggressive Cows and Magnetic Force Between Two Balls
 
 | Topic | Difficulty | Pattern |
 |---|---|---|
