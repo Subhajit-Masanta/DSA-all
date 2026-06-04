@@ -10,7 +10,7 @@
 
 Given two strings `s1` and `s2`, return `true` if `s2` contains a permutation of `s1`.
 
-A permutation means the same characters with the same frequencies but possibly in a different order.
+A permutation means the same characters with the same frequencies, but possibly in a different order.
 
 Example:
 
@@ -18,50 +18,36 @@ Example:
 s1 = "ab"
 s2 = "eidbaooo"
 
-Output: true
+Substring "ba" exists in s2.
+
+"ab" and "ba" have the same frequency.
+
+Answer = true
 ```
-
-Because:
-
-```text
-"ba"
-```
-
-is a permutation of:
-
-```text
-"ab"
-```
-
-and exists as a substring inside `s2`.
 
 ---
 
 ## 🧠 Core Insight
 
-We do NOT care about character order.
+A permutation is simply an anagram.
 
-We only care about:
-
-```text
-Character Frequencies
-```
-
-Example:
+So instead of checking every possible permutation:
 
 ```text
 ab
 ba
 ```
 
-Both have:
+we compare frequencies.
+
+If two strings have identical frequency arrays:
 
 ```text
 a = 1
 b = 1
 ```
 
-Therefore they are permutations.
+they are permutations of each other.
 
 ---
 
@@ -69,27 +55,31 @@ Therefore they are permutations.
 
 ### Step 1
 
-Store frequency of `s1`.
+Build frequency of `s1`.
 
 ```cpp
-vector<int> need(26,0);
+need[26]
 ```
+
+stores the required frequency.
 
 ---
 
 ### Step 2
 
-Create frequency of first window in `s2`.
-
-Window size:
-
-```text
-s1.length()
-```
+Build frequency of the first window of size:
 
 ```cpp
-vector<int> window(26,0);
+s1.size()
 ```
+
+inside `s2`.
+
+```cpp
+window[26]
+```
+
+stores current window frequency.
 
 ---
 
@@ -98,13 +88,13 @@ vector<int> window(26,0);
 Compare:
 
 ```cpp
-need == window
+if(window == need)
 ```
 
-If equal:
+Return:
 
 ```cpp
-return true;
+true
 ```
 
 ---
@@ -113,25 +103,39 @@ return true;
 
 Slide the window.
 
-Remove old character:
+For every new position:
+
+#### Remove old character
 
 ```cpp
 window[s2[left]-'a']--;
-```
-
-Move left:
-
-```cpp
 left++;
 ```
 
-Add new character:
+#### Add new character
 
 ```cpp
 window[s2[right]-'a']++;
 ```
 
-Compare again.
+#### Compare frequencies
+
+```cpp
+if(window == need)
+    return true;
+```
+
+---
+
+### Step 5
+
+No matching window found.
+
+Return:
+
+```cpp
+false
+```
 
 ---
 
@@ -146,17 +150,11 @@ s2 = "eidbaooo"
 
 ---
 
-### Frequency of s1
+### need
 
 ```text
 a = 1
 b = 1
-```
-
-Need:
-
-```text
-[1,1,0,0,0...]
 ```
 
 ---
@@ -167,7 +165,7 @@ Need:
 ei
 ```
 
-Window:
+Frequency:
 
 ```text
 e = 1
@@ -263,90 +261,6 @@ true
 
 ---
 
-## 🧠 Why No Sorting?
-
-You might think:
-
-```text
-ab -> ab
-ba -> ab
-```
-
-Sorting works.
-
-But sorting every window is expensive.
-
-Instead:
-
-```text
-ab -> [1,1,0,0...]
-ba -> [1,1,0,0...]
-```
-
-Frequency arrays automatically ignore order.
-
----
-
-## 🧠 Why Fixed Size Sliding Window?
-
-A permutation of:
-
-```text
-s1
-```
-
-must have exactly:
-
-```text
-s1.length()
-```
-
-characters.
-
-Example:
-
-```text
-s1 = "abc"
-```
-
-Valid window size:
-
-```text
-3
-```
-
-Only.
-
-Therefore:
-
-```text
-Fixed Size Sliding Window
-```
-
-is the correct pattern.
-
----
-
-## 🧠 Pattern Recognition
-
-Keywords:
-
-```text
-Permutation
-Anagram
-Substring
-```
-
-Usually indicate:
-
-```text
-Frequency Count
-+
-Fixed Size Sliding Window
-```
-
----
-
 ## ⏱ Time Complexity
 
 Building frequencies:
@@ -355,21 +269,15 @@ Building frequencies:
 O(n)
 ```
 
-Comparing:
-
-```cpp
-need == window
-```
-
-takes:
+Comparing vectors:
 
 ```text
 O(26)
 ```
 
-which is constant.
+for each window.
 
-Total:
+Since 26 is constant:
 
 ```text
 O(n)
@@ -383,9 +291,11 @@ O(n)
 O(26)
 ```
 
-Two frequency arrays.
+Which is:
 
-Constant space.
+```text
+O(1)
+```
 
 ---
 
@@ -396,9 +306,10 @@ Constant space.
 Sorting every window.
 
 ```text
-Works
-But Too Expensive
+Too slow.
 ```
+
+Use frequency counts instead.
 
 ---
 
@@ -406,63 +317,44 @@ But Too Expensive
 
 Rebuilding frequency for every window.
 
-Wrong:
-
 ```text
-Window 1 -> Build
-Window 2 -> Build
-Window 3 -> Build
+O(n*k)
 ```
 
-Use sliding window instead.
+Instead:
+
+```text
+Remove one character
+Add one character
+```
+
+while sliding.
 
 ---
 
 ### Mistake 3
 
-Forgetting to remove the outgoing character.
+Using variable window.
 
-When window moves:
+This is a:
 
 ```text
-abc
+Fixed Size Sliding Window
 ```
 
-to:
+problem.
 
-```text
-bcd
-```
+Window size must always remain:
 
-Remove:
-
-```text
-a
-```
-
-Add:
-
-```text
-d
-```
-
----
-
-### Mistake 4
-
-Using a variable-size window.
-
-This problem always uses:
-
-```text
-Window Size = s1.length()
+```cpp
+s1.size()
 ```
 
 ---
 
 ## 🔥 Key Insight
 
-Two strings are permutations of each other if their frequency arrays are identical.
+A permutation and an anagram have the same frequency array.
 
 Therefore:
 
@@ -470,13 +362,17 @@ Therefore:
 need == window
 ```
 
-is enough.
+means:
+
+```text
+Current window is a permutation of s1.
+```
 
 ---
 
 ## 🎯 Interview One-Liner
 
-Maintain a fixed-size sliding window in `s2` and compare its frequency array with `s1`'s frequency array.
+Use a fixed-size sliding window and compare frequency arrays of `s1` and the current window in `s2`.
 
 ---
 
@@ -487,8 +383,8 @@ class Solution {
 public:
     bool checkInclusion(string s1, string s2) {
 
-        vector<int> need(26,0);
-        vector<int> window(26,0);
+        vector<int> need(26, 0);
+        vector<int> window(26, 0);
 
         if(s1.size() > s2.size()) {
             return false;
@@ -523,4 +419,31 @@ public:
         return false;
     }
 };
+```
+
+---
+
+## 📚 Pattern Recognition
+
+Keywords:
+
+```text
+Permutation
+Anagram
+Substring
+Fixed Length
+```
+
+Think:
+
+```text
+Fixed Size Sliding Window + Frequency Count
+```
+
+---
+
+## 📝 Notebook One-Liner
+
+```text
+Build frequency of s1, maintain frequency of a fixed-size window in s2, slide by removing left and adding right, compare frequency arrays.
 ```
