@@ -2,13 +2,17 @@
 
 ## Problem
 
-Given the head of a linked list, swap every two adjacent nodes.
+Given the head of a linked list, swap every two adjacent nodes and return the modified list.
 
-You **cannot swap values**. Only the node connections (`next` pointers) may be changed.
+**Constraint:**
+
+Do **not** swap node values.
+
+Only change the node links.
 
 ---
 
-# Example 1
+# Example
 
 Input
 
@@ -24,51 +28,35 @@ Output
 
 ---
 
-# Example 2
+## Odd Length Example
 
 Input
 
 ```text
-1
+1 -> 2 -> 3 -> 4 -> 5
 ```
 
 Output
 
 ```text
-1
+2 -> 1 -> 4 -> 3 -> 5
 ```
 
----
-
-# Example 3
-
-Input
-
-```text
-1 -> 2 -> 3
-```
-
-Output
-
-```text
-2 -> 1 -> 3
-```
-
-The last node remains unchanged because it has no partner.
+The last node has no partner, so it remains unchanged.
 
 ---
 
 # Core Insight
 
-We are not reversing the entire list.
+We are **not reversing the entire list**.
 
-We are simply swapping
+We only swap
 
 ```text
-(first, second)
+(first , second)
 ```
 
-pair by pair.
+for every pair.
 
 Example
 
@@ -77,18 +65,16 @@ Example
 
 ↓
 
-(1,2) (3,4)
-
-↓
-
 2 -> 1 -> 4 -> 3
 ```
+
+This is a **pointer reconnection problem**.
 
 ---
 
 # Why Dummy Node?
 
-Without dummy
+Without dummy:
 
 ```text
 head
@@ -98,29 +84,43 @@ head
 1 -> 2 -> 3 -> 4
 ```
 
-After swapping
+After swapping,
 
 ```text
 2 -> 1 -> 3 -> 4
 ```
 
-Now
+Head changes from
 
 ```text
-head
-```
+1
 
-must become
+↓
 
-```text
 2
 ```
 
-The first pair becomes a special case.
+So the first pair becomes a special case.
 
 ---
 
-With dummy
+Using dummy:
+
+```text
+dummy -> 1 -> 2 -> 3 -> 4
+```
+
+Now every pair has a previous node.
+
+The same logic works for every iteration.
+
+No special cases.
+
+---
+
+# Visualization
+
+Before
 
 ```text
 dummy
@@ -128,36 +128,14 @@ dummy
 ↓
 
 0 -> 1 -> 2 -> 3 -> 4
-```
 
-Now every pair has a previous node.
-
-The same logic works for every iteration.
-
-No special handling is required.
-
----
-
-# Pointers Used
-
-```text
-prevPair
-
-↓
-
-dummy -> 1 -> 2 -> 3 -> 4
-
-          ↑    ↑
-        first second
+     ↑    ↑
+   first second
 ```
 
 ---
-
-# Swap Process
 
 ## Step 1
-
-Connect first to node after second.
 
 ```cpp
 first->next = second->next;
@@ -166,7 +144,7 @@ first->next = second->next;
 Result
 
 ```text
-1 -> 3 -> 4
+0 -> 1 -> 3 -> 4
 
 2 -> 3 -> 4
 ```
@@ -174,8 +152,6 @@ Result
 ---
 
 ## Step 2
-
-Connect second to first.
 
 ```cpp
 second->next = first;
@@ -191,8 +167,6 @@ Result
 
 ## Step 3
 
-Connect previous pair.
-
 ```cpp
 prevPair->next = second;
 ```
@@ -200,12 +174,65 @@ prevPair->next = second;
 Result
 
 ```text
-dummy -> 2 -> 1 -> 3 -> 4
+0 -> 2 -> 1 -> 3 -> 4
+```
+
+Swap completed.
+
+---
+
+# Algorithm
+
+### Step 1
+
+Handle edge cases.
+
+```text
+If list is empty or contains one node,
+return head.
 ```
 
 ---
 
-## Step 4
+### Step 2
+
+Create a dummy node.
+
+```text
+dummy -> head
+```
+
+---
+
+### Step 3
+
+Maintain
+
+```text
+prevPair
+
+first
+
+second
+```
+
+---
+
+### Step 4
+
+While two nodes exist,
+
+perform
+
+```cpp
+first->next = second->next;
+second->next = first;
+prevPair->next = second;
+```
+
+---
+
+### Step 5
 
 Move
 
@@ -213,7 +240,17 @@ Move
 prevPair = first;
 ```
 
-Next pair starts automatically.
+to process the next pair.
+
+---
+
+### Step 6
+
+Return
+
+```cpp
+dummy->next;
+```
 
 ---
 
@@ -222,10 +259,12 @@ Next pair starts automatically.
 Input
 
 ```text
-dummy
+1 -> 2 -> 3 -> 4
+```
 
-↓
+Dummy
 
+```text
 0 -> 1 -> 2 -> 3 -> 4
 ```
 
@@ -234,7 +273,7 @@ dummy
 ## Iteration 1
 
 ```text
-first  = 1
+first = 1
 
 second = 2
 ```
@@ -256,12 +295,7 @@ prevPair = 1
 ## Iteration 2
 
 ```text
-0 -> 2 -> 1 -> 3 -> 4
-
-          ↑
-      prevPair
-
-first  = 3
+first = 3
 
 second = 4
 ```
@@ -275,32 +309,8 @@ Swap
 Return
 
 ```text
-dummy->next
-```
-
-Output
-
-```text
 2 -> 1 -> 4 -> 3
 ```
-
----
-
-# Odd Length Example
-
-Input
-
-```text
-1 -> 2 -> 3 -> 4 -> 5
-```
-
-Swap
-
-```text
-2 -> 1 -> 4 -> 3 -> 5
-```
-
-The last node remains unchanged because it does not have a partner.
 
 ---
 
@@ -318,23 +328,11 @@ Space : O(1)
 
 ### Mistake 1
 
-```cpp
-first = second->next;
-```
+Swapping node values.
 
 Wrong.
 
-After swapping
-
-```text
-second->next
-
-↓
-
-first
-```
-
-So this moves back to the previous node.
+Only pointers should be changed.
 
 ---
 
@@ -352,40 +350,51 @@ Previous pair becomes disconnected.
 
 ### Mistake 3
 
-Forgetting to update
+Using
 
 ```cpp
-prevPair = first;
+first = second->next;
 ```
 
-Loop cannot continue correctly.
+after swapping.
+
+After swap,
+
+```text
+second->next = first
+```
+
+so it moves backwards.
+
+Correct update:
+
+```text
+prevPair = first
+```
+
+and the next pair is accessed through
+
+```cpp
+prevPair->next
+```
 
 ---
 
-# Why Dummy Makes Life Easy
+### Mistake 4
 
-Without dummy
+Not handling
 
 ```text
-Need:
+0 nodes
 
-newHead
-
-if(prevPair != NULL)
-
-special case for first pair
+1 node
 ```
 
-With dummy
+Always check
 
-```text
-Every pair has a previous node.
-
-Same code works for every iteration.
-
-No special cases.
-
-Cleaner interview solution.
+```cpp
+if(head == nullptr || head->next == nullptr)
+    return head;
 ```
 
 ---
@@ -396,27 +405,37 @@ This problem belongs to
 
 ```text
 Pointer Manipulation
-
-+
-
-Boundary Reconnection
 ```
 
-Similar problems
+Pattern:
+
+```text
+Find pair
+
+↓
+
+Reconnect three links
+
+↓
+
+Move to next pair
+```
+
+Similar Problems
 
 ```text
 92 Reverse Linked List II
 
-24 Swap Nodes in Pairs
-
 25 Reverse Nodes in K Group
+
+206 Reverse Linked List
 ```
 
 ---
 
 # Interview One-Liner
 
-> Maintain a pointer to the previous pair and swap each adjacent pair by changing only the next pointers. A dummy node eliminates special handling for the first pair.
+> Use a dummy node and reconnect pointers pair by pair. Dummy removes the special case of swapping the head and keeps the logic uniform.
 
 ---
 
@@ -425,6 +444,7 @@ Similar problems
 ```cpp
 class Solution {
 public:
+
     ListNode* swapPairs(ListNode* head) {
 
         if(head == nullptr || head->next == nullptr)
@@ -456,4 +476,4 @@ public:
 
 # Notebook One-Liner
 
-> Use a dummy node so every pair has a previous node. Swap using three pointer updates: `first->next`, `second->next`, and `prevPair->next`, then move `prevPair` to the tail of the swapped pair.
+> **Dummy Node Pattern:** Add an imaginary node before head so every pair has a previous node. Swap using three pointer reconnections and move to the next pair in O(n) time and O(1) space.
