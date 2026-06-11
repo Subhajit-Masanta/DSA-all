@@ -1,74 +1,52 @@
-# 206. Reverse Linked List
+# Reverse Linked List
 
-## Problem
-
-Given the head of a singly linked list, reverse the linked list and return the new head.
+| Topic       | Difficulty | Pattern                              |
+| :---------- | :--------- | :----------------------------------- |
+| Linked List | Easy       | Three Pointer / Pointer Manipulation |
 
 ---
 
-# Example
+# 📌 Problem Description
 
-Input
+Given the head of a singly linked list, reverse the linked list and return the new head.
+
+Example:
 
 ```text
+Input:
 1 -> 2 -> 3 -> 4 -> 5
-```
 
-Output
-
-```text
+Output:
 5 -> 4 -> 3 -> 2 -> 1
 ```
 
 ---
 
-# Core Insight
+# 🧠 Core Insight
 
-A linked list stores connections using pointers.
+A linked list is connected using **next pointers**.
 
-Initially
+Original:
 
 ```text
 1 -> 2 -> 3 -> 4 -> 5
 ```
 
-To reverse it, we must change every arrow.
+After reversing:
 
 ```text
 1 <- 2 <- 3 <- 4 <- 5
 ```
 
-The challenge is:
+The challenge is that changing a pointer may disconnect the remaining list.
 
-When we reverse a link, we may lose access to the remaining list.
-
-Example
-
-```text
-1 -> 2 -> 3 -> 4 -> 5
-```
-
-If we do
-
-```cpp
-2->next = 1;
-```
-
-without saving node 3 first,
-
-we lose access to
-
-```text
-3 -> 4 -> 5
-```
-
-Therefore we must save the next node before reversing.
+Before reversing a link, always **save the next node**.
 
 ---
 
-# Pattern Used
+# ⚙️ Algorithm
 
-## Three Pointer Pattern
+Maintain three pointers:
 
 ```text
 prev
@@ -76,19 +54,55 @@ curr
 next
 ```
 
-### Meaning
+### Step 1
 
-```text
-prev  = already reversed portion
+Save the next node.
 
-curr  = current node being processed
-
-next  = saved next node
+```cpp
+next = curr->next;
 ```
+
+### Step 2
+
+Reverse the current link.
+
+```cpp
+curr->next = prev;
+```
+
+### Step 3
+
+Move `prev` forward.
+
+```cpp
+prev = curr;
+```
+
+### Step 4
+
+Move `curr` forward.
+
+```cpp
+curr = next;
+```
+
+Repeat until
+
+```cpp
+curr == nullptr
+```
+
+Return
+
+```cpp
+prev
+```
+
+because it becomes the new head.
 
 ---
 
-# Initial Setup
+# 🧪 Example / Dry Run
 
 Input
 
@@ -96,19 +110,15 @@ Input
 1 -> 2 -> 3 -> 4 -> 5
 ```
 
-Pointers
+---
+
+### Initial State
 
 ```text
 prev = NULL
 
 curr = 1
 
-next = ?
-```
-
-Visualization
-
-```text
 NULL    1 -> 2 -> 3 -> 4 -> 5
  ^       ^
 prev    curr
@@ -116,63 +126,7 @@ prev    curr
 
 ---
 
-# Algorithm
-
-For every node:
-
-### Step 1
-
-Save next node.
-
-```cpp
-next = curr->next;
-```
-
----
-
-### Step 2
-
-Reverse link.
-
-```cpp
-curr->next = prev;
-```
-
----
-
-### Step 3
-
-Move prev forward.
-
-```cpp
-prev = curr;
-```
-
----
-
-### Step 4
-
-Move curr forward.
-
-```cpp
-curr = next;
-```
-
-Repeat until curr becomes NULL.
-
----
-
-# Dry Run
-
-## Iteration 1
-
-Initial
-
-```text
-NULL    1 -> 2 -> 3 -> 4 -> 5
- ^       ^
-prev    curr
-```
+### Iteration 1
 
 Save
 
@@ -186,7 +140,7 @@ Reverse
 NULL <- 1     2 -> 3 -> 4 -> 5
 ```
 
-Move
+Move pointers
 
 ```text
 prev = 1
@@ -194,17 +148,9 @@ prev = 1
 curr = 2
 ```
 
-Result
-
-```text
-NULL <- 1     2 -> 3 -> 4 -> 5
-        ^     ^
-      prev   curr
-```
-
 ---
 
-## Iteration 2
+### Iteration 2
 
 Save
 
@@ -228,31 +174,15 @@ curr = 3
 
 ---
 
-## Iteration 3
-
-Save
-
-```text
-next = 4
-```
-
-Reverse
+### Iteration 3
 
 ```text
 NULL <- 1 <- 2 <- 3     4 -> 5
 ```
 
-Move
-
-```text
-prev = 3
-
-curr = 4
-```
-
 ---
 
-## Iteration 4
+### Iteration 4
 
 ```text
 NULL <- 1 <- 2 <- 3 <- 4     5
@@ -260,7 +190,7 @@ NULL <- 1 <- 2 <- 3 <- 4     5
 
 ---
 
-## Iteration 5
+### Iteration 5
 
 ```text
 NULL <- 1 <- 2 <- 3 <- 4 <- 5
@@ -270,129 +200,68 @@ Now
 
 ```text
 curr = NULL
-```
 
-Loop ends.
-
----
-
-# Important Observation
-
-At the end
-
-```text
 prev = 5
-
-curr = NULL
 ```
 
-Who is the new head?
+Return
 
 ```text
 5
 ```
 
-which is stored in
-
-```text
-prev
-```
-
-Therefore
-
-```cpp
-return prev;
-```
-
-NOT
-
-```cpp
-return curr;
-```
-
-NOT
-
-```cpp
-return head;
-```
+which is the new head.
 
 ---
 
-# Why Do We Need next?
-
-Without
-
-```cpp
-next = curr->next;
-```
-
-after
-
-```cpp
-curr->next = prev;
-```
-
-the original forward connection is lost.
-
-Example
-
-Before
+# ⏱ Time Complexity
 
 ```text
-1 -> 2 -> 3
-```
-
-After
-
-```cpp
-2->next = 1;
-```
-
-becomes
-
-```text
-1 <- 2    3
-```
-
-Node 3 is disconnected unless saved earlier.
-
----
-
-# Complexity
-
-```text
-Time  : O(n)
-
-Space : O(1)
+O(n)
 ```
 
 Only one traversal is performed.
 
 ---
 
-# Common Mistakes
+# 📦 Space Complexity
 
-## Mistake 1
-
-```cpp
-next = next->next;
+```text
+O(1)
 ```
 
-Wrong.
-
-Eventually next becomes NULL.
-
-Then
-
-```cpp
-NULL->next
-```
-
-causes a crash.
+Only three pointer variables are used.
 
 ---
 
-## Mistake 2
+# ⚠️ Common Mistakes
+
+### Mistake 1
+
+Not saving the next node.
+
+Wrong
+
+```cpp
+curr->next = prev;
+curr = curr->next;
+```
+
+The remaining list is lost.
+
+Always save
+
+```cpp
+next = curr->next;
+```
+
+before reversing.
+
+---
+
+### Mistake 2
+
+Returning
 
 ```cpp
 return head;
@@ -400,11 +269,13 @@ return head;
 
 Wrong.
 
-head still points to the old first node.
+`head` still points to the old first node.
 
 ---
 
-## Mistake 3
+### Mistake 3
+
+Returning
 
 ```cpp
 return curr;
@@ -420,43 +291,47 @@ curr = NULL
 
 ---
 
-## Correct
+### Correct
 
 ```cpp
 return prev;
 ```
 
-because prev points to the new head.
+because `prev` points to the new head.
 
 ---
 
-# Pattern Recognition
+# 🔥 Key Insight
 
-This is the foundation for many Linked List problems.
-
-Used in:
+Always remember:
 
 ```text
-206 Reverse Linked List
+Save Next
 
-92 Reverse Linked List II
+↓
 
-25 Reverse Nodes in K Group
+Reverse Link
 
-143 Reorder List
+↓
 
-234 Palindrome Linked List
+Move Prev
+
+↓
+
+Move Curr
 ```
 
----
-
-# Interview One-Liner
-
-> Reverse a linked list by maintaining three pointers (prev, curr, next), reversing one link at a time while preserving access to the remaining nodes.
+Never reverse a link without saving the next node.
 
 ---
 
-# Final Code
+# 🎯 Interview One-Liner
+
+Reverse a linked list using the three-pointer technique (`prev`, `curr`, `next`) by reversing one link at a time while preserving access to the remaining nodes.
+
+---
+
+# 💻 Code (C++)
 
 ```cpp
 class Solution {
@@ -466,7 +341,7 @@ public:
         ListNode* prev = nullptr;
         ListNode* curr = head;
 
-        while (curr)
+        while(curr)
         {
             ListNode* next = curr->next;
 
@@ -484,6 +359,54 @@ public:
 
 ---
 
-# Notebook One-Liner
+# 📚 Pattern Recognition
 
-> Before reversing a link, always save the next node. Use the three-pointer pattern (prev, curr, next) to reverse the list in O(n) time and O(1) space.
+If the problem says:
+
+```text
+Reverse Linked List
+
+Reverse Sublist
+
+Reverse Every K Nodes
+
+Reverse Second Half
+```
+
+Think:
+
+```text
+Three Pointer Pattern
+
+prev
+
+↓
+
+curr
+
+↓
+
+next
+
+↓
+
+Reverse Link
+
+↓
+
+Move Forward
+```
+
+This pattern is reused in:
+
+```text
+206 Reverse Linked List
+
+92 Reverse Linked List II
+
+25 Reverse Nodes in K Group
+
+234 Palindrome Linked List
+
+143 Reorder List
+```
