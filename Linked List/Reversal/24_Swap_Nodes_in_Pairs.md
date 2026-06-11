@@ -1,61 +1,43 @@
-# 24. Swap Nodes in Pairs
+# Swap Nodes in Pairs
 
-## Problem
-
-Given the head of a linked list, swap every two adjacent nodes and return the modified list.
-
-**You cannot swap node values.**
-
-Only the node connections (`next` pointers) may be changed.
+| Topic       | Difficulty | Pattern                           |
+| :---------- | :--------- | :-------------------------------- |
+| Linked List | Medium     | Pointer Manipulation / Dummy Node |
 
 ---
 
-# Example 1
+# 📌 Problem Description
 
-Input
+Given the head of a linked list, swap every two adjacent nodes and return the modified list.
+
+**Node values cannot be changed.**
+
+Only the node connections (`next` pointers) may be modified.
+
+Example:
 
 ```text
+Input:
 1 -> 2 -> 3 -> 4
-```
 
-Output
-
-```text
+Output:
 2 -> 1 -> 4 -> 3
 ```
 
 ---
 
-# Example 2
+# 🧠 Core Insight
 
-Input
+We are **not reversing the entire linked list**.
 
-```text
-1 -> 2 -> 3 -> 4 -> 5
-```
-
-Output
-
-```text
-2 -> 1 -> 4 -> 3 -> 5
-```
-
-The last node remains unchanged because it has no partner.
-
----
-
-# Core Insight
-
-We are not reversing the entire list.
-
-We only reverse **every pair**.
+We only reverse **one pair at a time**.
 
 ```text
 1 -> 2 -> 3 -> 4
 
 ↓
 
-(1,2) swap
+Swap (1,2)
 
 ↓
 
@@ -63,28 +45,18 @@ We only reverse **every pair**.
 
 ↓
 
-(3,4) swap
+Swap (3,4)
 
 ↓
 
 2 -> 1 -> 4 -> 3
 ```
 
----
-
-# Pattern
-
-```text
-Pointer Manipulation
-
-+
-
-Reconnect Previous Pair
-```
+Using a **dummy node** removes the special case of changing the head.
 
 ---
 
-# Algorithm (Dummy Node)
+# ⚙️ Algorithm
 
 ### Step 1
 
@@ -106,26 +78,28 @@ first
 second
 ```
 
+where
+
+```text
+prevPair = node before current pair
+
+first = first node of pair
+
+second = second node of pair
+```
+
 ---
 
 ### Step 3
 
-For every pair
+Swap the pair.
 
-```text
-first = prevPair->next
+```cpp
+first->next = second->next;
 
-second = first->next
-```
+second->next = first;
 
-perform
-
-```text
-first->next = second->next
-
-second->next = first
-
-prevPair->next = second
+prevPair->next = second;
 ```
 
 ---
@@ -134,15 +108,15 @@ prevPair->next = second
 
 Move
 
-```text
-prevPair = first
+```cpp
+prevPair = first;
 ```
 
-and repeat.
+and repeat until fewer than two nodes remain.
 
 ---
 
-# Dry Run
+# 🧪 Example / Dry Run
 
 Input
 
@@ -156,10 +130,12 @@ dummy
 
 ---
 
-Iteration 1
+### Iteration 1
 
 ```text
-first  = 1
+prevPair = 0
+
+first = 1
 
 second = 2
 ```
@@ -178,13 +154,20 @@ prevPair = 1
 
 ---
 
-Iteration 2
+### Iteration 2
 
 ```text
 0 -> 2 -> 1 -> 3 -> 4
-
           ↑
       prevPair
+```
+
+Now
+
+```text
+first = 3
+
+second = 4
 ```
 
 Swap
@@ -205,45 +188,149 @@ dummy->next
 
 ---
 
-# Why Dummy Node?
+# 🧪 Odd Length Example
 
-Without dummy
+Input
 
 ```text
-head
+1 -> 2 -> 3 -> 4 -> 5
+```
 
-↓
+Swap first pair
 
+```text
+2 -> 1 -> 3 -> 4 -> 5
+```
+
+Swap second pair
+
+```text
+2 -> 1 -> 4 -> 3 -> 5
+```
+
+Node
+
+```text
+5
+```
+
+remains unchanged because it has no partner.
+
+---
+
+# ⏱ Time Complexity
+
+```text
+O(n)
+```
+
+Every node is visited once.
+
+---
+
+# 📦 Space Complexity
+
+```text
+O(1)
+```
+
+Only pointer variables are used.
+
+---
+
+# ⚠️ Common Mistakes
+
+### Mistake 1
+
+Updating
+
+```cpp
+first = second->next;
+```
+
+Wrong.
+
+After swapping,
+
+```cpp
+second->next = first;
+```
+
+so this moves backward.
+
+Correct
+
+```cpp
+prevPair = first;
+```
+
+---
+
+### Mistake 2
+
+Forgetting
+
+```cpp
+prevPair->next = second;
+```
+
+The swapped pair becomes disconnected from the previous part of the list.
+
+---
+
+### Mistake 3
+
+Not using a dummy node.
+
+Without a dummy node,
+
+```text
 1 -> 2
 ```
 
-After swapping
+becomes
 
 ```text
 2 -> 1
 ```
 
-Head must change.
+and the head changes.
 
-This becomes a special case.
+A dummy node avoids this special case and keeps the logic identical for every pair.
 
 ---
 
-With dummy
+# 🔥 Key Insight
+
+Think in **small blocks of two nodes**.
 
 ```text
-dummy -> 1 -> 2
+Take Pair
+
+↓
+
+Swap Pair
+
+↓
+
+Reconnect
+
+↓
+
+Move to Next Pair
 ```
 
-Every pair has a previous node.
-
-The same logic works for the first pair and all remaining pairs.
-
-No special cases.
+instead of thinking about the entire linked list.
 
 ---
 
-# Dummy Solution
+# 🎯 Interview One-Liner
+
+Use a dummy node and swap every adjacent pair by changing pointers, reconnecting each swapped pair with the previous one in **O(n)** time and **O(1)** space.
+
+---
+
+# 💻 Code (C++)
 
 ```cpp
 class Solution {
@@ -277,272 +364,50 @@ public:
 
 ---
 
-# Algorithm (Without Dummy)
+# 📚 Pattern Recognition
 
-### Step 1
-
-Handle the first pair separately.
+If the problem says:
 
 ```text
-newHead = head->next
+Swap Adjacent Nodes
+
+Reverse Every Small Block
+
+Pairwise Reordering
+
+Pointer Rearrangement
 ```
 
-because after first swap
+Think:
 
 ```text
-2 -> 1 -> ...
-```
+Dummy Node
 
-the new head becomes node 2.
+↓
 
----
+Take Two Nodes
 
-### Step 2
-
-Maintain
-
-```text
-prevPair
-first
-second
-```
-
----
-
-### Step 3
+↓
 
 Swap
 
-```text
-first->next = second->next
+↓
 
-second->next = first
-```
-
----
-
-### Step 4
-
-If previous pair exists
-
-```text
-prevPair->next = second
-```
-
----
-
-### Step 5
-
-Move
-
-```text
-prevPair = first
-
-first = first->next
-```
-
-Repeat.
-
----
-
-# Dry Run (Without Dummy)
-
-Input
-
-```text
-1 -> 2 -> 3 -> 4
-```
-
-First swap
-
-```text
-2 -> 1 -> 3 -> 4
-```
-
-Store
-
-```text
-newHead = 2
-```
-
-Second swap
-
-```text
-2 -> 1 -> 4 -> 3
-```
-
-Return
-
-```text
-newHead
-```
-
----
-
-# Non-Dummy Solution
-
-```cpp
-class Solution {
-public:
-    ListNode* swapPairs(ListNode* head) {
-
-        if(head == nullptr || head->next == nullptr)
-            return head;
-
-        ListNode* newHead = head->next;
-
-        ListNode* prevPair = nullptr;
-        ListNode* first = head;
-
-        while(first && first->next)
-        {
-            ListNode* second = first->next;
-
-            first->next = second->next;
-            second->next = first;
-
-            if(prevPair != nullptr)
-            {
-                prevPair->next = second;
-            }
-
-            prevPair = first;
-            first = first->next;
-        }
-
-        return newHead;
-    }
-};
-```
-
----
-
-# Even Length
-
-Input
-
-```text
-1 -> 2 -> 3 -> 4
-```
-
-Output
-
-```text
-2 -> 1 -> 4 -> 3
-```
-
-Every node is swapped.
-
----
-
-# Odd Length
-
-Input
-
-```text
-1 -> 2 -> 3 -> 4 -> 5
-```
-
-Output
-
-```text
-2 -> 1 -> 4 -> 3 -> 5
-```
-
-Last node remains unchanged because it has no adjacent partner.
-
----
-
-# Complexity
-
-```text
-Time  : O(n)
-
-Space : O(1)
-```
-
----
-
-# Common Mistakes
-
-### Mistake 1
-
-Updating
-
-```cpp
-first = second->next;
-```
-
-Wrong.
-
-After swapping
-
-```text
-second->next = first
-```
-
-so this points backward.
-
----
-
-### Mistake 2
-
-Forgetting
-
-```cpp
-prevPair->next = second;
-```
-
-Previous pair becomes disconnected.
-
----
-
-### Mistake 3
-
-Ignoring
-
-```text
-head change
-```
-
-when not using a dummy node.
-
----
-
-# Pattern Recognition
-
-This problem belongs to
-
-```text
-Linked List Pointer Manipulation
-```
-
-Pattern:
-
-```text
-Take a small block
+Reconnect
 
 ↓
 
-Change next pointers
-
-↓
-
-Reconnect block
-
-↓
-
-Move to next block
+Move Forward
 ```
 
----
+This pattern is reused in:
 
-# Interview One-Liner
+```text
+24 Swap Nodes in Pairs
 
-> Swap adjacent nodes by manipulating pointers instead of values, reconnect each swapped pair to the previous pair, and continue until fewer than two nodes remain.
+25 Reverse Nodes in K Group
 
----
+92 Reverse Linked List II
 
-# Notebook One-Liner
-
-> Dummy nodes eliminate head special cases and make pointer manipulation problems cleaner, safer, and easier to implement.
+143 Reorder List
+```
