@@ -1,11 +1,19 @@
-# 234. Palindrome Linked List
+# Palindrome Linked List
 
-## Problem
+| Topic       | Difficulty | Pattern                                   |
+| :---------- | :--------- | :---------------------------------------- |
+| Linked List | Easy       | Fast & Slow Pointer + Reverse Linked List |
 
-Given the head of a singly linked list, return:
+---
+
+# 📌 Problem Description
+
+Given the head of a singly linked list, determine whether it is a palindrome.
+
+Return:
 
 ```text
-true  -> if linked list is a palindrome
+true  -> if the linked list is a palindrome
 
 false -> otherwise
 ```
@@ -14,157 +22,35 @@ A palindrome reads the same forward and backward.
 
 ---
 
-# Example 1
+# 🧠 Core Insight
 
-Input
+Instead of using extra space, we can compare the first half and the second half of the linked list.
 
-```text
-1 -> 2 -> 2 -> 1
-```
-
-Output
+The problem combines two previously learned patterns:
 
 ```text
-true
-```
-
----
-
-# Example 2
-
-Input
-
-```text
-1 -> 2
-```
-
-Output
-
-```text
-false
-```
-
----
-
-# Brute Force Approach
-
-Store all node values inside a vector.
-
-```cpp
-vector<int> arr;
-```
-
-Example
-
-```text
-1 -> 2 -> 2 -> 1
+Find Middle
 
 ↓
 
-[1,2,2,1]
-```
+Reverse Second Half
 
-Then perform a normal palindrome check using two pointers.
+↓
 
----
-
-## Complexity
-
-```text
-Time  : O(n)
-
-Space : O(n)
-```
-
-Accepted but does not satisfy the follow-up.
-
----
-
-# Optimal Approach
-
-This problem combines two previously learned patterns.
-
-```text
-876 Middle of Linked List
-
-+
-
-206 Reverse Linked List
+Compare Both Halves
 ```
 
 ---
 
-# Core Insight
+# ⚙️ Algorithm
 
-A palindrome is symmetric.
+### Step 1
 
-Example
-
-```text
-1 -> 2 -> 2 -> 1
-```
-
-Split at middle
-
-```text
-1 -> 2 | 2 -> 1
-```
-
-Reverse second half
-
-```text
-1 -> 2 | 1 -> 2
-```
-
-Now compare both halves.
-
-```text
-1 == 1
-
-2 == 2
-```
-
-Palindrome.
-
----
-
-# Pattern Used
-
-## Step 1
-
-Find middle using
-
-```text
-Fast & Slow Pointer
-```
-
----
-
-## Step 2
-
-Reverse second half using
-
-```text
-prev
-curr
-next
-```
-
-pattern.
-
----
-
-## Step 3
-
-Compare first half and reversed second half.
-
----
-
-# Find Middle
+Find the middle using Fast & Slow pointers.
 
 ```cpp
-ListNode* slow = head;
-ListNode* fast = head;
+slow = head;
+fast = head;
 
 while(fast && fast->next)
 {
@@ -173,7 +59,7 @@ while(fast && fast->next)
 }
 ```
 
-After loop:
+After the loop,
 
 ```text
 slow
@@ -183,7 +69,40 @@ points to the middle node.
 
 ---
 
-# Example
+### Step 2
+
+Reverse the second half starting from `slow`.
+
+```cpp
+ListNode* second = reverse(slow);
+```
+
+---
+
+### Step 3
+
+Compare the first half and the reversed second half.
+
+```cpp
+while(second)
+{
+    if(head->val != second->val)
+        return false;
+
+    head = head->next;
+    second = second->next;
+}
+```
+
+If every value matches,
+
+```cpp
+return true;
+```
+
+---
+
+# 🧪 Example / Dry Run
 
 Input
 
@@ -191,150 +110,55 @@ Input
 1 -> 2 -> 2 -> 1
 ```
 
-After loop
+---
+
+### Find Middle
 
 ```text
 1 -> 2 -> 2 -> 1
           ^
-         slow
+        slow
 ```
 
 ---
 
-# Reverse Second Half
+### Reverse Second Half
 
-Reverse from
-
-```text
-slow
-```
-
-onwards.
+Original
 
 ```text
 2 -> 1
-
-↓
-
-1 -> 2
-```
-
-Store result in
-
-```cpp
-second
-```
-
----
-
-# Important Observation
-
-Reversing changes the original links.
-
-Before reverse
-
-```text
-1 -> 2 -> 2 -> 1 -> NULL
 ```
 
 After reverse
 
 ```text
-head
-
-↓
-
-1 -> 2 -> 2 -> NULL
-
-
-second
-
-↓
-
-1 -> 2 -> NULL
-```
-
-Notice:
-
-The second half is now disconnected and reversed.
-
----
-
-# Why Compare Using while(second)?
-
-Wrong
-
-```cpp
-while(head)
-```
-
-Because
-
-```text
-head list
-```
-
-may continue longer than
-
-```text
-second list
-```
-
-Eventually
-
-```cpp
-second = nullptr;
-```
-
-and
-
-```cpp
-second->val
-```
-
-causes a crash.
-
----
-
-Correct
-
-```cpp
-while(second)
-```
-
-Compare only while reversed second half exists.
-
----
-
-# Dry Run
-
-Input
-
-```text
-1 -> 2 -> 2 -> 1
-```
-
-Middle
-
-```text
-1 -> 2 | 2 -> 1
-```
-
-Reverse second half
-
-```text
 1 -> 2
 ```
 
-Compare
+Now
 
 ```text
-1 == 1
+First Half
 
-2 == 2
+1 -> 2
+
+Second Half
+
+1 -> 2
 ```
 
-All equal.
+---
+
+### Compare
+
+```text
+1 == 1 ✅
+
+2 == 2 ✅
+```
+
+All nodes match.
 
 Return
 
@@ -344,7 +168,7 @@ true
 
 ---
 
-# Odd Length Example
+# 🧪 Odd Length Example
 
 Input
 
@@ -352,15 +176,21 @@ Input
 1 -> 2 -> 3 -> 2 -> 1
 ```
 
-Middle
+Find middle
 
 ```text
-3
+1 -> 2 -> 3 -> 2 -> 1
+          ^
+         slow
 ```
 
 Reverse from middle
 
 ```text
+3 -> 2 -> 1
+
+↓
+
 1 -> 2 -> 3
 ```
 
@@ -374,29 +204,43 @@ Compare
 3 == 3
 ```
 
-Palindrome.
-
----
-
-# Complexity
+Return
 
 ```text
-Find Middle      O(n)
-
-Reverse Half     O(n)
-
-Compare          O(n)
-
-Total            O(n)
-
-Space            O(1)
+true
 ```
 
 ---
 
-# Common Mistakes
+# ⏱ Time Complexity
+
+```text
+Find Middle     O(n)
+
+Reverse Half    O(n)
+
+Compare         O(n)
+
+Total           O(n)
+```
+
+---
+
+# 📦 Space Complexity
+
+```text
+O(1)
+```
+
+No extra data structure is used.
+
+---
+
+# ⚠️ Common Mistakes
 
 ### Mistake 1
+
+Using
 
 ```cpp
 while(head)
@@ -404,7 +248,23 @@ while(head)
 
 Wrong.
 
-Use
+The reversed second half may become shorter.
+
+Eventually,
+
+```cpp
+second == nullptr
+```
+
+and accessing
+
+```cpp
+second->val
+```
+
+causes a crash.
+
+Always use
 
 ```cpp
 while(second)
@@ -414,25 +274,13 @@ while(second)
 
 ### Mistake 2
 
-Forgetting
-
-```cpp
-return prev;
-```
-
-inside reverse function.
-
----
-
-### Mistake 3
-
 Calling
 
 ```cpp
 reverse(slow);
 ```
 
-without storing returned head.
+without storing the returned head.
 
 Correct
 
@@ -442,7 +290,7 @@ ListNode* second = reverse(slow);
 
 ---
 
-### Mistake 4
+### Mistake 3
 
 Comparing node addresses.
 
@@ -452,8 +300,6 @@ Wrong
 if(head == second)
 ```
 
-We must compare values.
-
 Correct
 
 ```cpp
@@ -462,25 +308,23 @@ if(head->val != second->val)
 
 ---
 
-# Pattern Recognition
+### Mistake 4
 
-This problem is a combination of:
+Forgetting
 
-```text
-876 Middle of Linked List
-
-+
-
-206 Reverse Linked List
+```cpp
+return prev;
 ```
 
-Whenever a problem asks:
+inside the reverse function.
 
-```text
-Compare first half with second half
-```
+The reversed list head is stored in `prev`.
 
-think:
+---
+
+# 🔥 Key Insight
+
+Think of the problem as:
 
 ```text
 Find Middle
@@ -491,27 +335,29 @@ Reverse Second Half
 
 ↓
 
-Compare
+Compare Both Halves
 ```
 
----
-
-# Interview One-Liner
-
-> Find the middle of the linked list, reverse the second half, then compare both halves node by node in O(n) time and O(1) space.
+instead of trying to compare from both ends directly.
 
 ---
 
-# Final Code
+# 🎯 Interview One-Liner
+
+Find the middle of the linked list, reverse the second half, and compare both halves node by node to achieve **O(n)** time and **O(1)** space.
+
+---
+
+# 💻 Code (C++)
 
 ```cpp
 class Solution {
 public:
 
-    ListNode* reverse(ListNode* slow)
+    ListNode* reverse(ListNode* head)
     {
         ListNode* prev = nullptr;
-        ListNode* curr = slow;
+        ListNode* curr = head;
 
         while(curr)
         {
@@ -556,6 +402,40 @@ public:
 
 ---
 
-# Notebook One-Liner
+# 📚 Pattern Recognition
 
-> Find the middle using Fast & Slow pointers, reverse the second half of the linked list, and compare both halves node by node.
+If the problem says:
+
+```text
+Compare First Half
+
+Compare Symmetric Nodes
+
+Check Palindrome
+
+Constant Extra Space
+```
+
+Think:
+
+```text
+Fast & Slow Pointer
+
+↓
+
+Reverse Second Half
+
+↓
+
+Compare Both Halves
+```
+
+This pattern is reused in:
+
+```text
+234 Palindrome Linked List
+
+143 Reorder List
+
+Various Half-Reversal Linked List Problems
+```
