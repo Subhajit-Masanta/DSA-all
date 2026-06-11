@@ -1,311 +1,76 @@
-# 92. Reverse Linked List II
+# Reverse Linked List II
 
-## Problem
+| Topic | Difficulty | Pattern |
+| :----- | :--------- | :------ |
+| Linked List | Medium | Three Pointer + Sublist Reconnection |
 
-Given the head of a linked list and two positions `left` and `right`, reverse the nodes from position `left` to position `right`.
+---
+
+# 📌 Problem Description
+
+Given the head of a linked list and two integers `left` and `right`, reverse the nodes from position `left` to position `right`.
 
 Return the modified linked list.
 
----
-
-# Example
-
-Input
+Example:
 
 ```text
+Input:
 1 -> 2 -> 3 -> 4 -> 5
 
 left = 2
 right = 4
-```
 
-Output
-
-```text
+Output:
 1 -> 4 -> 3 -> 2 -> 5
 ```
 
-Only the sublist
-
-```text
-2 -> 3 -> 4
-```
-
-is reversed.
+Only the nodes between positions `left` and `right` are reversed.
 
 ---
 
-# Core Insight
+# 🧠 Core Insight
 
-This is not a completely new problem.
+This is an extension of **206. Reverse Linked List**.
 
-It is:
-
-```text
-206 Reverse Linked List
-
-+
-
-Reconnect the reversed section
-```
-
-The actual reversal logic is exactly the same as Problem 206.
-
-The challenge is reconnecting the reversed portion back to the list.
-
----
-
-# Visualization
-
-Original List
+Instead of reversing the entire list:
 
 ```text
 1 -> 2 -> 3 -> 4 -> 5
+
+↓
+
+5 -> 4 -> 3 -> 2 -> 1
 ```
 
-Mark the range
+we reverse only a sublist.
 
 ```text
 1 -> [2 -> 3 -> 4] -> 5
-```
 
-Reverse only the marked section
+↓
 
-```text
 1 -> [4 -> 3 -> 2] -> 5
 ```
 
-Final Answer
+The reversal logic is exactly the same.
 
-```text
-1 -> 4 -> 3 -> 2 -> 5
-```
+The only extra work is reconnecting the reversed section.
 
 ---
 
-# Important Pointers
-
-For
-
-```text
-1 -> 2 -> 3 -> 4 -> 5
-
-left = 2
-right = 4
-```
-
-Store:
-
-### prevleft
-
-Node before reversal starts.
-
-```text
-1
-```
-
----
-
-### sublisthead
-
-Original left node.
-
-```text
-2
-```
-
-After reversal this becomes the tail.
-
----
-
-### prev
-
-New head of reversed section.
-
-```text
-4
-```
-
----
-
-### curr
-
-First node after reversed section.
-
-```text
-5
-```
-
----
-
-# Before Reversal
-
-```text
-prevleft
-
-↓
-
-1 -> 2 -> 3 -> 4 -> 5
-     ^
- sublisthead
-```
-
----
-
-# Reverse Section
-
-Reverse exactly
-
-```text
-right - left + 1
-```
-
-nodes.
-
-For
-
-```text
-left = 2
-right = 4
-```
-
-Reverse
-
-```text
-3 nodes
-```
-
----
-
-# After Reversal
-
-```text
-prev
-
-↓
-
-4 -> 3 -> 2 -> NULL
-
-curr
-
-↓
-
-5
-```
-
-Notice:
-
-```text
-sublisthead = 2
-```
-
-has become the tail.
-
----
-
-# Reconnecting
-
-We need
-
-```text
-1 -> 4 -> 3 -> 2 -> 5
-```
-
-Two connections are required.
-
----
-
-## Connection 1
-
-```cpp
-prevleft->next = prev;
-```
-
-Makes
-
-```text
-1 -> 4
-```
-
----
-
-## Connection 2
-
-```cpp
-sublisthead->next = curr;
-```
-
-Makes
-
-```text
-2 -> 5
-```
-
----
-
-# Edge Case
-
-Suppose
-
-```text
-left = 1
-```
-
-Example
-
-```text
-1 -> 2 -> 3 -> 4 -> 5
-
-left = 1
-right = 3
-```
-
-Then
-
-```text
-prevleft = NULL
-```
-
-There is no node before the reversed section.
-
-After reversing:
-
-```text
-3 -> 2 -> 1 -> 4 -> 5
-```
-
-The new head becomes
-
-```text
-prev
-```
-
-Therefore:
-
-```cpp
-if(prevleft)
-{
-    prevleft->next = prev;
-}
-else
-{
-    head = prev;
-}
-```
-
----
-
-# Algorithm
+# ⚙️ Algorithm
 
 ### Step 1
 
 Move to position `left`.
 
-Store
+Store:
 
 ```text
-prevleft
-sublisthead
+prevLeft      = node before left
+
+sublistHead   = left node
 ```
 
 ---
@@ -315,14 +80,20 @@ sublisthead
 Reverse exactly
 
 ```text
-right-left+1
+right - left + 1
 ```
 
-nodes using
+nodes using the normal
 
 ```text
 prev
+
+↓
+
 curr
+
+↓
+
 next
 ```
 
@@ -332,22 +103,43 @@ pattern.
 
 ### Step 3
 
-Reconnect:
+Reconnect both ends.
 
 ```cpp
-prevleft->next = prev;
-sublisthead->next = curr;
+prevLeft->next = prev;
+
+sublistHead->next = curr;
 ```
 
 ---
 
 ### Step 4
 
+If
+
+```text
+left == 1
+```
+
+there is no previous node.
+
+Update
+
+```cpp
+head = prev;
+```
+
+instead.
+
+---
+
+### Step 5
+
 Return head.
 
 ---
 
-# Dry Run
+# 🧪 Example / Dry Run
 
 Input
 
@@ -355,28 +147,41 @@ Input
 1 -> 2 -> 3 -> 4 -> 5
 
 left = 2
+
 right = 4
 ```
 
-Before reverse
+---
+
+### Locate Boundaries
 
 ```text
-prevleft = 1
+prevLeft = 1
 
-sublisthead = 2
+sublistHead = 2
+
+1 -> 2 -> 3 -> 4 -> 5
+     ^
+sublistHead
 ```
+
+---
+
+### Reverse Sublist
 
 Reverse
 
 ```text
 2 -> 3 -> 4
+```
 
-↓
+Result
 
+```text
 4 -> 3 -> 2
 ```
 
-After reverse
+Pointers become
 
 ```text
 prev = 4
@@ -384,15 +189,23 @@ prev = 4
 curr = 5
 ```
 
-Reconnect
+---
+
+### Reconnect
+
+First connection
 
 ```text
 1 -> 4
+```
 
+Second connection
+
+```text
 2 -> 5
 ```
 
-Final
+Final list
 
 ```text
 1 -> 4 -> 3 -> 2 -> 5
@@ -400,47 +213,109 @@ Final
 
 ---
 
-# Complexity
+# 🧪 Edge Case
+
+Input
 
 ```text
-Time  : O(n)
+1 -> 2 -> 3 -> 4 -> 5
 
-Space : O(1)
+left = 1
+
+right = 3
 ```
 
-Only one traversal is required.
+Reverse
+
+```text
+1 -> 2 -> 3
+
+↓
+
+3 -> 2 -> 1
+```
+
+Now
+
+```text
+prevLeft = NULL
+```
+
+So
+
+```cpp
+head = prev;
+```
+
+Final answer
+
+```text
+3 -> 2 -> 1 -> 4 -> 5
+```
 
 ---
 
-# Common Mistakes
+# ⏱ Time Complexity
+
+```text
+O(n)
+```
+
+Only one traversal of the linked list.
+
+---
+
+# 📦 Space Complexity
+
+```text
+O(1)
+```
+
+Only pointer variables are used.
+
+---
+
+# ⚠️ Common Mistakes
 
 ### Mistake 1
 
-```cpp
-curr = prev->next;
-```
+Forgetting to reconnect the first half.
 
-Wrong.
-
-After reversing, links have changed.
-
-Correct:
+Wrong
 
 ```cpp
-curr = next;
+sublistHead->next = curr;
 ```
+
+only.
+
+Need
+
+```cpp
+prevLeft->next = prev;
+```
+
+also.
 
 ---
 
 ### Mistake 2
 
-Forgetting
+Forgetting to reconnect the tail.
 
-```cpp
-sublisthead->next = curr;
+Wrong
+
+```text
+1 -> 4 -> 3 -> 2
+
+5
 ```
 
-Tail becomes disconnected.
+Correct
+
+```cpp
+sublistHead->next = curr;
+```
 
 ---
 
@@ -449,60 +324,91 @@ Tail becomes disconnected.
 Ignoring
 
 ```text
-left = 1
+left == 1
 ```
 
-This requires updating head.
+There is no previous node.
+
+Update
+
+```cpp
+head = prev;
+```
+
+instead of
+
+```cpp
+prevLeft->next = prev;
+```
 
 ---
 
-# Pattern Recognition
+### Mistake 4
 
-This problem extends:
+Reversing the wrong number of nodes.
+
+Reverse exactly
 
 ```text
-206 Reverse Linked List
+right - left + 1
 ```
 
-New idea:
+nodes.
+
+---
+
+# 🔥 Key Insight
+
+Think of the problem as
 
 ```text
-Reverse a portion
+Find Left Boundary
 
-+
+↓
 
-Reconnect boundaries
+Reverse Sublist
+
+↓
+
+Reconnect Left Side
+
+↓
+
+Reconnect Right Side
 ```
 
----
-
-# Interview One-Liner
-
-> Reverse only the nodes between left and right using the standard three-pointer reversal technique, then reconnect the reversed section with the unreversed parts of the list.
+instead of trying to manipulate the entire linked list.
 
 ---
 
-# Final Code
+# 🎯 Interview One-Liner
+
+Reverse only the required sublist using the standard three-pointer reversal technique and reconnect the reversed section with the unreversed parts of the linked list.
+
+---
+
+# 💻 Code (C++)
 
 ```cpp
 class Solution {
 public:
+
     ListNode* reverseBetween(ListNode* head, int left, int right) {
 
         if(head == nullptr || left == right)
             return head;
 
-        ListNode* prevleft = nullptr;
-        ListNode* sublisthead = head;
+        ListNode* prevLeft = nullptr;
+        ListNode* sublistHead = head;
 
         for(int i = 1; i < left; i++)
         {
-            prevleft = sublisthead;
-            sublisthead = sublisthead->next;
+            prevLeft = sublistHead;
+            sublistHead = sublistHead->next;
         }
 
         ListNode* prev = nullptr;
-        ListNode* curr = sublisthead;
+        ListNode* curr = sublistHead;
         ListNode* next = nullptr;
 
         for(int i = 0; i < right - left + 1; i++)
@@ -516,16 +422,12 @@ public:
             curr = next;
         }
 
-        if(prevleft)
-        {
-            prevleft->next = prev;
-        }
+        if(prevLeft)
+            prevLeft->next = prev;
         else
-        {
             head = prev;
-        }
 
-        sublisthead->next = curr;
+        sublistHead->next = curr;
 
         return head;
     }
@@ -534,6 +436,48 @@ public:
 
 ---
 
-# Notebook One-Liner
+# 📚 Pattern Recognition
 
-> Reverse only the required range using the normal linked list reversal pattern, then reconnect the node before the range and the node after the range to the reversed section.
+If the problem says
+
+```text
+Reverse Part of Linked List
+
+Reverse Between Positions
+
+Reverse Range
+
+Reverse Sublist
+```
+
+Think
+
+```text
+Find Left Boundary
+
+↓
+
+Three Pointer Reverse
+
+↓
+
+Reconnect Both Ends
+```
+
+instead of
+
+```text
+Reverse Entire Linked List
+```
+
+This pattern is reused in:
+
+```text
+92 Reverse Linked List II
+
+25 Reverse Nodes in K Group
+
+143 Reorder List
+
+Many Linked List Segment Problems
+```
