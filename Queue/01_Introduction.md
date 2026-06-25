@@ -162,85 +162,236 @@ q.size();       // Number of elements
 
 ---
 
+---
+
 ## 🚀 Applications of Queue
 
-### 1. CPU Scheduling
+Queue is used whenever tasks or requests must be processed in the **same order in which they arrive (FIFO)**.
 
-Operating systems schedule processes in FIFO order for many scheduling scenarios.
+### 1. Breadth First Search (BFS) ⭐⭐⭐⭐⭐
 
----
+The **most important DSA application**.
 
-### 2. Breadth First Search (BFS)
+Queues process nodes **level by level**.
 
-Nodes are processed level by level using a queue.
+Examples:
 
----
-
-### 3. Printer Queue
-
-Print requests are processed in the order they arrive.
+* Level Order Traversal
+* Shortest Path in Unweighted Graph
 
 ---
 
-### 4. Network Packet Buffer
+### 2. CPU Job Scheduling
 
-Routers and switches temporarily store packets in queues before forwarding them.
+Operating Systems schedule waiting processes using queues.
 
----
+Examples:
 
-### 5. Producer-Consumer Problems
-
-Tasks are produced at one end and consumed from the other while maintaining order.
-
----
-
-### 6. Message Queues
-
-Messaging systems process messages in arrival order.
+* FCFS Scheduling
+* Round Robin Scheduling (Circular Queue)
 
 ---
 
-### 7. IO Buffers
+### 3. Network Packet Scheduling
 
-Used when two devices operate at different speeds (e.g., keyboard → CPU, network buffers).
+Routers and switches temporarily store packets before forwarding them.
+
+Examples:
+
+* Router Packet Queue
+* Mail Queue
+
+---
+
+### 4. Shared Resources
+
+Queues act as waiting lists when multiple users share a single resource.
+
+Examples:
+
+* Printer Queue
+* Disk Scheduling
+* Database Request Queue
+
+---
+
+### 5. Buffer Between Fast and Slow Devices
+
+Queues temporarily store data when two devices work at different speeds.
+
+Examples:
+
+* Keyboard → CPU
+* Audio/Video Streaming
+* Network Buffer
+
+---
+
+### 6. Waiting Line Simulation
+
+Real-life waiting systems naturally follow FIFO.
+
+Examples:
+
+* ATM Queue
+* Ticket Counter
+* Hospital Queue
+* Call Center Waiting Queue
+
+---
+
+### 7. Producer–Consumer Systems
+
+One process produces tasks while another consumes them in arrival order.
+
+Examples:
+
+* Message Queues
+* Task Scheduling Systems
 
 ---
 
 ## ✅ Advantages
 
-* Simple FIFO ordering.
-* Fast insertion and deletion (**O(1)**).
-* Ideal for scheduling and buffering.
-* Widely used in BFS, Operating Systems, Networking and Streaming.
+* Maintains **FIFO** ordering automatically.
+* Enqueue and Dequeue operations take **O(1)** time.
+* Useful when multiple consumers share a single resource.
+* Fast for inter-process communication.
+* Can be used to implement other data structures.
+* Widely used in Operating Systems, Networking, BFS, Scheduling and Streaming.
 
 ---
 
 ## ❌ Disadvantages
 
-* Middle elements cannot be accessed directly.
-* Array implementation may waste space unless a Circular Queue is used.
-* Fixed-size arrays can overflow.
+* No direct access to middle elements.
+* Insertion and deletion in the middle are expensive.
+* Searching takes **O(n)** time.
+* Linear array implementation wastes space after repeated dequeues.
+* Array implementation requires a predefined maximum size.
+* Overflow may occur if the queue becomes full.
+
+---
+
+# 📚 Types of Queue
+
+```text
+Queue
+│
+├── Linear Queue
+├── Circular Queue
+├── Priority Queue
+└── Deque (Double Ended Queue)
+```
+
+---
+
+## 1. Linear Queue
+
+A normal FIFO queue.
+
+### Allowed Operations
+
+* ✅ Enqueue → Rear
+* ✅ Dequeue → Front
+* ✅ Peek/Front
+* ✅ Rear/Back
+
+```text
+Front                Rear
+
+10 20 30 40
+```
+
+---
+
+## 2. Circular Queue ⭐⭐⭐⭐⭐
+
+The last position is connected back to the first.
+
+Freed positions are reused efficiently, eliminating wasted space.
+
+### Allowed Operations
+
+* ✅ Enqueue → Rear
+* ✅ Dequeue → Front
+* ✅ Peek/Front
+* ✅ Rear/Back
+
+```text
+      Front
+        ↓
++---+---+---+---+
+|10 |20 |30 |40 |
++---+---+---+---+
+        ↑
+       Rear
+```
+
+---
+
+## 3. Priority Queue
+
+Elements are removed according to **priority**, not insertion order.
+
+Higher (or lower) priority elements leave first.
+
+### Allowed Operations
+
+* ✅ Insert
+* ✅ Delete Highest / Lowest Priority
+* ✅ Peek Highest / Lowest Priority
+
+Example:
+
+```text
+Priority
+
+5
+4
+3
+2
+1
+```
+
+---
+
+## 4. Deque (Double Ended Queue)
+
+Insertion and deletion are allowed at **both ends**.
+
+### Allowed Operations
+
+* ✅ Push Front
+* ✅ Push Back
+* ✅ Pop Front
+* ✅ Pop Back
+* ✅ Front
+* ✅ Back
+
+```text
+← Insert / Delete
+
+10 20 30
+
+Insert / Delete →
+```
 
 ---
 
 ## 🎯 Placement Takeaways
 
-* Queue follows **FIFO**.
+* Queue follows **FIFO (First In First Out)**.
 * Insert at **Rear**, Remove from **Front**.
 * Basic operations are **O(1)**.
-* Most interview implementations use:
+* **Circular Queue** solves the wasted-space problem of Linear Queue.
+* **Priority Queue** does **NOT** follow FIFO.
+* **Deque** allows insertion and deletion at **both ends**.
+* **BFS (Trees & Graphs)** is the most important application of Queue.
+* The four queue types every interview candidate should know are:
 
-  * Array
-  * Linked List
+  * Linear Queue
   * Circular Queue
-  * Queue using Stacks
-* BFS in Trees and Graphs is one of the most important queue applications.
+  * Priority Queue
+  * Deque
 
----
-
-## 📌 Next Topics
-
-* Queue using Array
-* Queue using Linked List
-* Circular Queue
-* Design Circular Queue (LeetCode 622)
