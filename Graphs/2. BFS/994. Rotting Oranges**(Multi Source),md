@@ -1,0 +1,622 @@
+# 994. Rotting Oranges
+
+| Topic | Difficulty | Pattern |
+|--------|------------|---------|
+| Graph | Medium | Multi-Source BFS |
+
+---
+
+# 📌 Problem Description
+
+You are given an **m × n** grid.
+
+Each cell can contain:
+
+- `0` → Empty Cell
+- `1` → Fresh Orange
+- `2` → Rotten Orange
+
+Every **1 minute**, every rotten orange spreads to its **4-directional** fresh neighbours.
+
+Return
+
+- Minimum minutes needed to rot all oranges.
+- Return **-1** if some fresh orange can never rot.
+
+---
+
+## Example
+
+Input
+
+```text
+2 1 1
+1 1 0
+0 1 1
+```
+
+Output
+
+```text
+4
+```
+
+---
+
+# 🧠 Intuition
+
+This is **NOT** a DFS problem.
+
+Question asks
+
+```text
+Every Minute
+```
+
+All rotten oranges spread
+
+```text
+AT THE SAME TIME
+```
+
+This is exactly what **BFS Level Order Traversal** does.
+
+---
+
+# Why DFS Fails?
+
+DFS
+
+```text
+2
+
+↓
+
+2
+
+↓
+
+2
+
+↓
+
+2
+```
+
+DFS immediately goes deep.
+
+It cannot represent
+
+```text
+Minute 1
+
+Minute 2
+
+Minute 3
+```
+
+---
+
+# Why BFS Works?
+
+Every BFS level represents
+
+```text
+1 Minute
+```
+
+Queue
+
+```text
+Minute 0
+
+↓
+
+Minute 1
+
+↓
+
+Minute 2
+
+↓
+
+Minute 3
+```
+
+---
+
+# Multi-Source BFS
+
+Unlike normal BFS,
+
+we do **not** start from one source.
+
+We start from
+
+```text
+ALL Rotten Oranges
+```
+
+Example
+
+```text
+2 1 1
+
+1 2 1
+
+1 1 2
+```
+
+Initial Queue
+
+```text
+(0,0)
+
+(1,1)
+
+(2,2)
+```
+
+All spread simultaneously.
+
+---
+
+# Data Structures Used
+
+```cpp
+queue<pair<int,int>> q;
+```
+
+Stores
+
+```text
+(Row, Column)
+```
+
+Example
+
+```text
+(2,3)
+```
+
+means
+
+```text
+Row = 2
+
+Column = 3
+```
+
+---
+
+```cpp
+fresh
+```
+
+Stores
+
+```text
+Number of Fresh Oranges Remaining
+```
+
+---
+
+# Algorithm
+
+```text
+Traverse Grid
+
+↓
+
+Push Every Rotten Orange into Queue
+
+↓
+
+Count Fresh Oranges
+
+↓
+
+While Queue Not Empty
+
+↓
+
+Process One BFS Level
+
+↓
+
+Rot Adjacent Fresh Oranges
+
+↓
+
+Push Newly Rotten Oranges
+
+↓
+
+Minute++
+
+↓
+
+Fresh == 0 ?
+
+↓
+
+Return Minutes
+
+Else
+
+↓
+
+Return -1
+```
+
+---
+
+# Code (Using Four If Statements)
+
+```cpp
+class Solution {
+public:
+
+    int orangesRotting(vector<vector<int>>& grid)
+    {
+        int rows = grid.size();
+        int cols = grid[0].size();
+
+        queue<pair<int,int>> q;
+
+        int fresh = 0;
+
+        for(int row = 0; row < rows; row++)
+        {
+            for(int col = 0; col < cols; col++)
+            {
+                if(grid[row][col] == 2)
+                    q.push({row, col});
+
+                else if(grid[row][col] == 1)
+                    fresh++;
+            }
+        }
+
+        if(fresh == 0)
+            return 0;
+
+        int minutes = 0;
+
+        while(!q.empty())
+        {
+            int size = q.size();
+            bool changed = false;
+
+            while(size--)
+            {
+                int row = q.front().first;
+                int col = q.front().second;
+                q.pop();
+
+                // Up
+                if(row > 0 && grid[row-1][col] == 1)
+                {
+                    grid[row-1][col] = 2;
+                    q.push({row-1,col});
+                    fresh--;
+                    changed = true;
+                }
+
+                // Down
+                if(row < rows-1 && grid[row+1][col] == 1)
+                {
+                    grid[row+1][col] = 2;
+                    q.push({row+1,col});
+                    fresh--;
+                    changed = true;
+                }
+
+                // Left
+                if(col > 0 && grid[row][col-1] == 1)
+                {
+                    grid[row][col-1] = 2;
+                    q.push({row,col-1});
+                    fresh--;
+                    changed = true;
+                }
+
+                // Right
+                if(col < cols-1 && grid[row][col+1] == 1)
+                {
+                    grid[row][col+1] = 2;
+                    q.push({row,col+1});
+                    fresh--;
+                    changed = true;
+                }
+            }
+
+            if(changed)
+                minutes++;
+        }
+
+        return (fresh == 0) ? minutes : -1;
+    }
+};
+```
+
+---
+
+# Cleaner Code (Direction Arrays)
+
+```cpp
+class Solution {
+public:
+
+    int orangesRotting(vector<vector<int>>& grid)
+    {
+        int rows = grid.size();
+        int cols = grid[0].size();
+
+        queue<pair<int,int>> q;
+
+        int fresh = 0;
+
+        for(int row = 0; row < rows; row++)
+        {
+            for(int col = 0; col < cols; col++)
+            {
+                if(grid[row][col] == 2)
+                    q.push({row,col});
+
+                else if(grid[row][col] == 1)
+                    fresh++;
+            }
+        }
+
+        if(fresh == 0)
+            return 0;
+
+        int dr[] = {-1, 1, 0, 0};
+        int dc[] = {0, 0, -1, 1};
+
+        int minutes = 0;
+
+        while(!q.empty())
+        {
+            int size = q.size();
+            bool changed = false;
+
+            while(size--)
+            {
+                int row = q.front().first;
+                int col = q.front().second;
+                q.pop();
+
+                for(int i = 0; i < 4; i++)
+                {
+                    int newRow = row + dr[i];
+                    int newCol = col + dc[i];
+
+                    if(newRow >= 0 &&
+                       newRow < rows &&
+                       newCol >= 0 &&
+                       newCol < cols &&
+                       grid[newRow][newCol] == 1)
+                    {
+                        grid[newRow][newCol] = 2;
+                        q.push({newRow,newCol});
+                        fresh--;
+                        changed = true;
+                    }
+                }
+            }
+
+            if(changed)
+                minutes++;
+        }
+
+        return (fresh == 0) ? minutes : -1;
+    }
+};
+```
+
+---
+
+# One Dry Run
+
+Input
+
+```text
+2 1 1
+1 1 0
+0 1 1
+```
+
+Minute 0
+
+Queue
+
+```text
+(0,0)
+```
+
+Grid
+
+```text
+2 1 1
+1 1 0
+0 1 1
+```
+
+---
+
+Minute 1
+
+Queue
+
+```text
+(0,1)
+
+(1,0)
+```
+
+Grid
+
+```text
+2 2 1
+2 1 0
+0 1 1
+```
+
+---
+
+Minute 2
+
+Queue
+
+```text
+(0,2)
+
+(1,1)
+```
+
+Grid
+
+```text
+2 2 2
+2 2 0
+0 1 1
+```
+
+---
+
+Minute 3
+
+Queue
+
+```text
+(2,1)
+```
+
+Grid
+
+```text
+2 2 2
+2 2 0
+0 2 1
+```
+
+---
+
+Minute 4
+
+Queue
+
+```text
+(2,2)
+```
+
+Grid
+
+```text
+2 2 2
+2 2 0
+0 2 2
+```
+
+Answer
+
+```text
+4
+```
+
+---
+
+# Common Mistakes
+
+## ❌ Using DFS
+
+DFS cannot simulate time.
+
+---
+
+## ❌ Starting BFS from only one rotten orange
+
+Push **all** rotten oranges first.
+
+---
+
+## ❌ Forgetting to count fresh oranges
+
+Need to know whether all oranges became rotten.
+
+---
+
+## ❌ Increasing minutes after every node
+
+Increase minutes only after **one complete BFS level** if at least one fresh orange became rotten.
+
+---
+
+## ❌ Marking after popping
+
+Immediately change
+
+```text
+1 → 2
+```
+
+before pushing into the queue.
+
+Otherwise the same orange can be pushed multiple times.
+
+---
+
+# Complexity
+
+| Complexity | Value |
+|------------|-------|
+| Time | **O(m × n)** |
+| Auxiliary Space | **O(m × n)** |
+
+### Time
+
+Every orange enters the queue at most once.
+
+```text
+O(m × n)
+```
+
+### Auxiliary Space
+
+Queue can contain all cells in the worst case.
+
+```text
+O(m × n)
+```
+
+---
+
+# Key Takeaways
+
+- This is the first **Multi-Source BFS** problem.
+- Push **all** rotten oranges into the queue before BFS starts.
+- Every BFS level represents **one minute**.
+- Mark oranges rotten before pushing them into the queue.
+- BFS is used because all rotten oranges spread **simultaneously**.
+
+---
+
+# Similar Problems
+
+```text
+Rotting Oranges
+        │
+        ▼
+01 Matrix
+        │
+        ▼
+Walls and Gates
+        │
+        ▼
+As Far from Land as Possible
+        │
+        ▼
+Shortest Path in Binary Matrix
+```
