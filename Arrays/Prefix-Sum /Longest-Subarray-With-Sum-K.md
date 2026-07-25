@@ -161,14 +161,14 @@ Store current prefix
 # 💻 C++ Code (Optimal)
 
 ```cpp
+# 💻 C++ Code (Optimal)
+
+```cpp
 class Solution {
 public:
     int longestSubarray(vector<int>& arr, int k) {
 
         unordered_map<int, int> mp;
-
-        // Prefix sum 0 occurs before the array starts
-        mp[0] = -1;
 
         int prefixSum = 0;
         int maxLen = 0;
@@ -177,8 +177,11 @@ public:
 
             prefixSum += arr[i];
 
-            // If we've seen (prefixSum - k),
-            // then the subarray between them sums to k.
+            // Case 1: Subarray starts from index 0
+            if(prefixSum == k)
+                maxLen = i + 1;
+
+            // Case 2: Need a previous prefix sum
             if(mp.find(prefixSum - k) != mp.end()) {
                 maxLen = max(maxLen, i - mp[prefixSum - k]);
             }
@@ -192,6 +195,104 @@ public:
         return maxLen;
     }
 };
+```
+
+---
+
+# 📌 Code Flow
+
+```text
+Start
+
+↓
+
+prefixSum = 0
+
+↓
+
+For every element
+
+↓
+
+Update prefixSum
+
+↓
+
+Is prefixSum == k ?
+
+YES
+
+↓
+
+Longest length = i + 1
+
+↓
+
+Need = prefixSum - k
+
+↓
+
+Does Need exist in HashMap?
+
+YES
+
+↓
+
+Length = i - firstIndexOf(Need)
+
+↓
+
+Update maximum length
+
+↓
+
+Store current prefixSum
+(only if first occurrence)
+
+↓
+
+Continue
+```
+
+---
+
+# ⭐ Why store only the FIRST occurrence?
+
+Example
+
+```text
+Prefix Sum = 5
+
+appears at
+
+index 2
+
+again at
+
+index 7
+```
+
+Suppose current index is
+
+```text
+10
+```
+
+Using
+
+```text
+10 - 2 = 8
+```
+
+Using latest index
+
+```text
+10 - 7 = 3
+```
+
+For the **longest** subarray, we always want the **earliest** occurrence.
+
+So never overwrite an existing prefix sum. :contentReference[oaicite:0]{index=0}
 ```
 
 ---
