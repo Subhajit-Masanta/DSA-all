@@ -158,6 +158,143 @@ Store current prefix
 
 ---
 
+# 💻 C++ Code (Optimal)
+
+```cpp
+class Solution {
+public:
+    int longestSubarray(vector<int>& arr, int k) {
+
+        unordered_map<int, int> mp;
+
+        // Prefix sum 0 occurs before the array starts
+        mp[0] = -1;
+
+        int prefixSum = 0;
+        int maxLen = 0;
+
+        for(int i = 0; i < arr.size(); i++) {
+
+            prefixSum += arr[i];
+
+            // If we've seen (prefixSum - k),
+            // then the subarray between them sums to k.
+            if(mp.find(prefixSum - k) != mp.end()) {
+                maxLen = max(maxLen, i - mp[prefixSum - k]);
+            }
+
+            // Store only the first occurrence
+            if(mp.find(prefixSum) == mp.end()) {
+                mp[prefixSum] = i;
+            }
+        }
+
+        return maxLen;
+    }
+};
+```
+
+---
+
+# 📌 Code Flow
+
+```text
+Initialize
+
+↓
+
+prefixSum = 0
+
+↓
+
+HashMap
+
+0 → -1
+
+↓
+
+For every element
+
+↓
+
+Update Prefix Sum
+
+↓
+
+Need = prefixSum - k
+
+↓
+
+Need exists?
+
+YES
+
+↓
+
+Update maximum length
+
+↓
+
+Store current prefix
+(if first occurrence)
+
+↓
+
+Continue
+```
+
+---
+
+# ⭐ Why `mp[0] = -1`?
+
+Suppose
+
+```text
+arr = [10, 5]
+
+k = 15
+```
+
+Current prefix
+
+```text
+15
+```
+
+Need
+
+```text
+15 - 15 = 0
+```
+
+Since
+
+```text
+0 → -1
+```
+
+Length becomes
+
+```text
+1 - (-1) = 2
+```
+
+which correctly represents the subarray
+
+```text
+[10, 5]
+```
+
+Without `mp[0] = -1`, you'd need a separate check:
+
+```cpp
+if(prefixSum == k)
+```
+
+Using `0 → -1` removes that special case and makes the code cleaner. This is the version most commonly used in interviews. :contentReference[oaicite:1]{index=1}
+
+
+
 # ⚠️ Common Mistakes
 
 ❌ Using Sliding Window (fails with negatives)
