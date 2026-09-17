@@ -1,0 +1,480 @@
+# GRAPH THEORY — EY GDS REVISION
+
+## 1. What is a Graph?
+
+A **Graph** is a data structure used to represent **objects and relationships between them**.
+
+* **Vertex / Node** → object
+* **Edge** → relationship/connection
+
+Example:
+
+```text
+A ----- B
+|       |
+C ----- D
+```
+
+### Why do we need Graphs?
+
+Graphs model real-world connections:
+
+| Problem        | Nodes     | Edges        |
+| -------------- | --------- | ------------ |
+| Social network | People    | Friendships  |
+| Google Maps    | Locations | Roads        |
+| Network        | Computers | Connections  |
+| Flights        | Airports  | Flights      |
+| Prerequisites  | Courses   | Dependencies |
+
+---
+
+## 2. Graph Representation
+
+### A. Adjacency List — Most Important
+
+Stores neighbors of every vertex.
+
+```text
+A → B, C
+B → A
+C → A
+```
+
+Space:
+
+```text
+O(V + E)
+```
+
+Best for **sparse graphs** and most BFS/DFS problems.
+
+### B. Adjacency Matrix
+
+2D matrix where `matrix[i][j]` tells whether an edge exists.
+
+Space:
+
+```text
+O(V²)
+```
+
+Edge lookup:
+
+```text
+O(1)
+```
+
+Useful when graph is **dense**.
+
+### C. Edge List
+
+Store all edges directly:
+
+```text
+(A,B)
+(A,C)
+(B,D)
+```
+
+Useful in algorithms such as **Kruskal** and **Bellman-Ford**.
+
+---
+
+## 3. Important Graph Types
+
+### Undirected Graph
+
+Edge has no direction.
+
+```text
+A ----- B
+```
+
+Means:
+
+```text
+A ↔ B
+```
+
+### Directed Graph
+
+Edge has direction.
+
+```text
+A → B
+```
+
+Does not imply `B → A`.
+
+### Weighted Graph
+
+Each edge has a weight/cost.
+
+```text
+A --5-- B
+```
+
+Weight may represent distance, cost, time, etc.
+
+### Unweighted Graph
+
+Edges have no meaningful weight.
+
+### Sparse vs Dense
+
+```text
+Sparse → relatively few edges → Adjacency List
+Dense  → many edges         → Adjacency Matrix may be useful
+```
+
+---
+
+## 4. Basic Graph Terminology
+
+### Degree
+
+Number of edges connected to a vertex in an **undirected graph**.
+
+### Indegree
+
+Number of incoming edges.
+
+### Outdegree
+
+Number of outgoing edges.
+
+### Path
+
+A sequence of vertices connected by edges.
+
+```text
+A → B → C → D
+```
+
+### Cycle
+
+A path that eventually returns to a previously reached vertex, forming a loop.
+
+```text
+A → B → C → A
+```
+
+### Connected Graph
+
+In an undirected graph, every vertex is reachable from every other vertex.
+
+### Connected Component
+
+A separate group of mutually reachable vertices.
+
+```text
+A -- B      C -- D
+              |
+              E
+```
+
+There are **2 connected components**.
+
+---
+
+## 5. Tree and Graph
+
+A **Tree is a special type of Graph**.
+
+A tree is:
+
+```text
+Connected + Acyclic
+```
+
+For `N` vertices:
+
+```text
+Edges = N - 1
+```
+
+A tree cannot contain a cycle.
+
+---
+
+## 6. DAG
+
+**DAG = Directed Acyclic Graph**
+
+* Directed
+* No cycle
+
+Used mainly for **dependencies and scheduling**.
+
+Example:
+
+```text
+A → B → D
+A → C → D
+```
+
+---
+
+## 7. BFS — Breadth First Search
+
+Visits nodes **level by level**.
+
+### Data Structure
+
+```text
+Queue
+```
+
+Pattern:
+
+```text
+Start
+↓
+All immediate neighbors
+↓
+Next level
+↓
+...
+```
+
+### Important Use
+
+**Shortest path in an unweighted graph.**
+
+Complexity with adjacency list:
+
+```text
+O(V + E)
+```
+
+---
+
+## 8. DFS — Depth First Search
+
+Goes as deep as possible before backtracking.
+
+### Data Structure
+
+```text
+Stack
+```
+
+Usually implemented using:
+
+* Recursion, or
+* Explicit stack
+
+Complexity:
+
+```text
+O(V + E)
+```
+
+### Common Uses
+
+* Traversal
+* Connected components
+* Cycle detection
+* Path exploration
+
+---
+
+## 9. Visited Array
+
+Graphs can contain cycles or multiple paths to the same node.
+
+So traversal usually maintains:
+
+```text
+visited[node]
+```
+
+When a node is processed, mark it visited to avoid unnecessary/repeated traversal.
+
+---
+
+## 10. BFS vs DFS
+
+| Feature                  | BFS        | DFS               |
+| ------------------------ | ---------- | ----------------- |
+| Main idea                | Level-wise | Depth-wise        |
+| Uses                     | Queue      | Stack / Recursion |
+| Unweighted shortest path | Yes        | Not guaranteed    |
+| Cycle detection          | Yes        | Yes               |
+| Connected components     | Yes        | Yes               |
+
+Remember:
+
+```text
+BFS → Queue
+DFS → Stack / Recursion
+```
+
+---
+
+## 11. Topological Sort
+
+A **topological ordering** arranges vertices so that for every edge:
+
+```text
+A → B
+```
+
+`A` comes before `B`.
+
+Applicable only to a:
+
+```text
+DAG
+```
+
+### Uses
+
+* Course prerequisites
+* Task scheduling
+* Dependency resolution
+* Build systems
+
+Common approaches:
+
+```text
+DFS
+Kahn's Algorithm → BFS + Indegree
+```
+
+---
+
+## 12. Shortest Path — Which Algorithm?
+
+| Situation                     | Common Algorithm |
+| ----------------------------- | ---------------- |
+| Unweighted graph              | BFS              |
+| Weighted, non-negative edges  | Dijkstra         |
+| Negative edge weights allowed | Bellman-Ford     |
+| All-pairs shortest path       | Floyd-Warshall   |
+
+---
+
+## 13. Minimum Spanning Tree (MST)
+
+For a **connected weighted undirected graph**, an MST:
+
+* Connects all vertices
+* Has no cycle
+* Has minimum total edge weight
+
+For `N` vertices:
+
+```text
+MST edges = N - 1
+```
+
+Main algorithms:
+
+```text
+Prim → Priority Queue commonly used
+Kruskal → Sort edges + DSU
+```
+
+---
+
+## 14. DSU / Union-Find
+
+A data structure for maintaining **groups/components**.
+
+Main operations:
+
+```text
+find(x)
+union(x, y)
+```
+
+Used for:
+
+* Connected components
+* Cycle detection in undirected graphs
+* Kruskal's MST
+
+---
+
+# GRAPH — QUICK MEMORY MAP
+
+```text
+Graph
+│
+├── Representation
+│   ├── Adjacency List → O(V+E)
+│   ├── Matrix         → O(V²)
+│   └── Edge List
+│
+├── Traversal
+│   ├── BFS → Queue
+│   └── DFS → Stack / Recursion
+│
+├── Connectivity
+│   └── BFS / DFS
+│
+├── Cycle Detection
+│   └── BFS / DFS / DSU
+│
+├── DAG
+│   └── Topological Sort
+│
+├── Shortest Path
+│   ├── BFS
+│   ├── Dijkstra
+│   ├── Bellman-Ford
+│   └── Floyd-Warshall
+│
+└── MST
+    ├── Prim
+    └── Kruskal + DSU
+```
+
+# MUST-KNOW INTERVIEW QUESTIONS
+
+1. What is a graph and why is it used?
+2. Directed vs undirected graph?
+3. Weighted vs unweighted graph?
+4. Adjacency list vs matrix?
+5. Why is adjacency list usually preferred?
+6. What is a sparse/dense graph?
+7. What are degree, indegree and outdegree?
+8. What is a path? What is a cycle?
+9. What is a connected component?
+10. Why do we need a visited array?
+11. BFS uses which data structure?
+12. DFS uses which data structure?
+13. When can BFS find shortest path?
+14. What is a DAG?
+15. What is topological sort?
+16. What is a tree in relation to a graph?
+17. How many edges does a tree with `N` nodes have?
+18. When do we use Dijkstra vs Bellman-Ford?
+19. What is an MST?
+20. What is DSU and where is it used?
+
+# ONE-LINE RULES TO REMEMBER
+
+```text
+Graph = Nodes + Relationships
+
+Adjacency List = O(V + E)
+Adjacency Matrix = O(V²)
+
+BFS = Queue
+DFS = Stack / Recursion
+
+Unweighted shortest path = BFS
+
+DAG → Topological Sort
+
+Tree = Connected + Acyclic
+Tree with N nodes → N-1 edges
+
+MST → Prim / Kruskal
+Kruskal → DSU
+
+Graph traversal → Usually use Visited[]
+```
