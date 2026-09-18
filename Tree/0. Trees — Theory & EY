@@ -1,0 +1,1078 @@
+# 🌳 Trees — Theory & EY Interview Preparation
+
+> **Target:** EY GDS / Fresher Technical Interview
+> **Priority:** Medium
+> **Goal:** Understand Tree fundamentals clearly before coding.
+
+---
+
+# 1. What is a Tree?
+
+A **Tree is a special type of Graph**.
+
+More precisely:
+
+> A tree is a **connected, undirected graph with no cycles**.
+
+### Example
+
+```text
+        A
+       / \
+      B   C
+     / \
+    D   E
+```
+
+This is a tree because:
+
+* It is connected.
+* It is undirected.
+* It has no cycle.
+* There is exactly one path between any two vertices.
+
+---
+
+# 2. Why is a Tree a Special Type of Graph?
+
+A general graph can have:
+
+* Cycles
+* Multiple paths between two vertices
+* Disconnected components
+* Arbitrary connections
+
+A tree has additional restrictions.
+
+```text
+GRAPH
+  │
+  ├── Connected
+  ├── Undirected
+  └── No cycles
+        ↓
+      TREE
+```
+
+### Important Definition
+
+For an **undirected graph**:
+
+```text
+Connected + Acyclic = Tree
+```
+
+---
+
+# 3. Important Properties of a Tree
+
+## Property 1 — N Nodes → N - 1 Edges
+
+If a tree has `N` vertices:
+
+```text
+Edges = N - 1
+```
+
+### Example
+
+```text
+        A
+       / \
+      B   C
+     /
+    D
+```
+
+Nodes = 4
+
+Edges = 3
+
+```text
+E = V - 1
+```
+
+---
+
+## Property 2 — A Tree Has No Cycle
+
+```text
+        A
+       / \
+      B---C
+```
+
+This is **not a tree**.
+
+Because:
+
+```text
+A → B → C → A
+```
+
+forms a cycle.
+
+---
+
+## Property 3 — A Tree Must Be Connected
+
+```text
+A --- B
+
+C --- D
+```
+
+This is **not a tree**.
+
+There are two disconnected components.
+
+---
+
+## Property 4 — Exactly One Path Between Any Two Nodes
+
+Consider:
+
+```text
+        A
+       / \
+      B   C
+     / \
+    D   E
+```
+
+Path from `D` to `C`:
+
+```text
+D → B → A → C
+```
+
+There is exactly **one path**.
+
+If there were two different paths, they would create a cycle.
+
+---
+
+# 4. Why Do We Need Trees?
+
+Trees are useful when data has a **hierarchical relationship**.
+
+## File System
+
+```text
+Computer
+│
+├── Documents
+│   ├── Resume.pdf
+│   └── Notes.txt
+│
+├── Pictures
+│   ├── Photo1
+│   └── Photo2
+│
+└── Videos
+```
+
+## Organization
+
+```text
+CEO
+│
+├── Manager A
+│   ├── Employee 1
+│   └── Employee 2
+│
+└── Manager B
+    ├── Employee 3
+    └── Employee 4
+```
+
+## HTML DOM
+
+```text
+HTML
+├── HEAD
+└── BODY
+    ├── DIV
+    └── P
+```
+
+### Core Idea
+
+> **Trees naturally represent hierarchical data.**
+
+---
+
+# 5. Tree Terminology
+
+Consider:
+
+```text
+             A
+           /   \
+          B     C
+        /  \     \
+       D    E     F
+```
+
+---
+
+## Root
+
+The topmost node.
+
+```text
+A
+```
+
+A rooted tree has one root.
+
+---
+
+## Parent
+
+A node directly above another node.
+
+```text
+    B
+   / \
+  D   E
+```
+
+`B` is the parent of `D` and `E`.
+
+---
+
+## Child
+
+A node directly below another node.
+
+`D` and `E` are children of `B`.
+
+---
+
+## Siblings
+
+Nodes having the same parent.
+
+```text
+    B
+   / \
+  D   E
+```
+
+`D` and `E` are siblings.
+
+---
+
+## Leaf Node
+
+A node with **no children**.
+
+In:
+
+```text
+             A
+           /   \
+          B     C
+        /  \     \
+       D    E     F
+```
+
+Leaf nodes:
+
+```text
+D, E, F
+```
+
+Other names:
+
+* Leaf node
+* Terminal node
+
+> Do not call it simply the "last node". The proper term is **leaf node**.
+
+---
+
+## Internal Node
+
+A node having at least one child.
+
+In the example:
+
+```text
+A, B, C
+```
+
+are internal nodes.
+
+---
+
+## Edge
+
+The connection between two nodes.
+
+```text
+A ----- B
+    ↑
+   Edge
+```
+
+---
+
+# 6. Depth
+
+Depth tells us how far a node is from the root.
+
+Usually:
+
+```text
+Depth(root) = 0
+```
+
+Example:
+
+```text
+        A          depth = 0
+       / \
+      B   C        depth = 1
+     /
+    D              depth = 2
+```
+
+Therefore:
+
+```text
+depth(A) = 0
+depth(B) = 1
+depth(D) = 2
+```
+
+---
+
+# 7. Height
+
+Height represents the longest downward distance from a node to a leaf.
+
+Example:
+
+```text
+        A
+       /
+      B
+     /
+    C
+```
+
+If height is measured in **edges**:
+
+```text
+height(A) = 2
+```
+
+### Important
+
+Different problems/textbooks may define height using:
+
+* Number of edges
+* Number of nodes
+
+Always follow the convention used by the problem.
+
+---
+
+# 8. Depth vs Height
+
+| Depth                                 | Height                                     |
+| ------------------------------------- | ------------------------------------------ |
+| Distance from root to node            | Distance from node to deepest leaf         |
+| Measured downward from root           | Measured downward from the node            |
+| Root has depth 0 in common convention | Leaf has height 0 in edge-based convention |
+
+Example:
+
+```text
+        A
+       / \
+      B   C
+     /
+    D
+```
+
+```text
+depth(D) = 2
+
+height(B) = 1
+height(A) = 2
+```
+
+---
+
+# 9. Subtree
+
+A node and all of its descendants form a subtree.
+
+```text
+        A
+       / \
+      B   C
+     / \
+    D   E
+```
+
+Subtree rooted at `B`:
+
+```text
+      B
+     / \
+    D   E
+```
+
+---
+
+# 10. Tree vs Graph
+
+| Graph                           | Tree                               |
+| ------------------------------- | ---------------------------------- |
+| General structure               | Special type of graph              |
+| May be directed or undirected   | Mathematical tree is undirected    |
+| May contain cycles              | No cycles                          |
+| May be disconnected             | Connected                          |
+| Multiple paths may exist        | Exactly one path between two nodes |
+| Number of edges is unrestricted | `N - 1` edges for `N` nodes        |
+| Not necessarily hierarchical    | Naturally represents hierarchy     |
+
+---
+
+# 11. How to Identify a Tree?
+
+For an **undirected graph**:
+
+### Method 1
+
+Check:
+
+```text
+Connected
++
+No Cycle
+=
+Tree
+```
+
+### Method 2
+
+If the graph has:
+
+```text
+N vertices
+N - 1 edges
+```
+
+and is connected, it is a tree.
+
+### Important Interview Question
+
+**Q: How do you determine whether an undirected graph is a tree?**
+
+**Answer:**
+
+> Check whether the graph is connected and contains no cycle.
+
+---
+
+# 12. Binary Tree
+
+A **Binary Tree** is a special type of tree.
+
+Rule:
+
+> Every node can have **at most two children**.
+
+```text
+        A
+       / \
+      B   C
+     / \
+    D   E
+```
+
+Each node can have:
+
+```text
+0 children
+1 child
+2 children
+```
+
+But never more than 2.
+
+---
+
+# 13. General Tree vs Binary Tree
+
+### General Tree
+
+A node can have multiple children.
+
+```text
+        A
+     / / \ \
+    B C   D E
+```
+
+### Binary Tree
+
+A node can have at most two children.
+
+```text
+        A
+       / \
+      B   C
+```
+
+Therefore:
+
+```text
+Tree
+  ↓
+Binary Tree
+```
+
+Binary Tree is a restricted form of Tree.
+
+---
+
+# 14. Types of Binary Trees
+
+## 14.1 Full Binary Tree
+
+Every node has either:
+
+```text
+0 children
+OR
+2 children
+```
+
+Never exactly one child.
+
+Example:
+
+```text
+        A
+       / \
+      B   C
+         / \
+        D   E
+```
+
+---
+
+## 14.2 Complete Binary Tree
+
+Rules:
+
+1. Every level except possibly the last is completely filled.
+2. The last level is filled from **left to right**.
+
+Example:
+
+```text
+        A
+       / \
+      B   C
+     / \  /
+    D  E F
+```
+
+---
+
+## 14.3 Perfect Binary Tree
+
+Rules:
+
+1. Every internal node has exactly 2 children.
+2. All leaf nodes are at the same level.
+
+Example:
+
+```text
+        A
+       / \
+      B   C
+     / \ / \
+    D  E F  G
+```
+
+---
+
+## 14.4 Balanced Binary Tree
+
+A balanced tree keeps its height relatively small compared with the number of nodes.
+
+Balanced:
+
+```text
+        A
+       / \
+      B   C
+     / \ / \
+    D  E F  G
+```
+
+Skewed:
+
+```text
+A
+ \
+  B
+   \
+    C
+     \
+      D
+```
+
+Balanced trees are useful because operations can remain efficient.
+
+---
+
+# 15. BST — Binary Search Tree
+
+A **Binary Search Tree (BST)** is a binary tree with an ordering property.
+
+For every node:
+
+```text
+Left Subtree < Root < Right Subtree
+```
+
+Example:
+
+```text
+          8
+        /   \
+       4     12
+      / \    / \
+     2   6  10 14
+```
+
+For root `8`:
+
+```text
+Left  → 2, 4, 6
+Right → 10, 12, 14
+```
+
+Therefore:
+
+```text
+Left < Root < Right
+```
+
+---
+
+# 16. Binary Tree vs BST
+
+| Binary Tree                       | BST                              |
+| --------------------------------- | -------------------------------- |
+| At most 2 children                | At most 2 children               |
+| No ordering requirement           | Has ordering property            |
+| Left can be greater than root     | Left < root                      |
+| Right can be smaller than root    | Right > root                     |
+| Searching can take O(N)           | Average/balanced search O(log N) |
+| Inorder is not necessarily sorted | Inorder is sorted                |
+
+Example:
+
+```text
+       10
+      /  \
+     20   5
+```
+
+This is a valid **Binary Tree**.
+
+But it is **NOT a BST** because:
+
+```text
+20 > 10
+```
+
+yet `20` is on the left.
+
+---
+
+# 17. Why Do We Need BST?
+
+A normal binary tree does not provide an ordering rule.
+
+BST provides:
+
+```text
+Left → smaller
+Root → middle
+Right → larger
+```
+
+Therefore, while searching:
+
+```text
+Search 6
+
+        8
+       / \
+      4   12
+     / \
+    2   6
+```
+
+At `8`:
+
+```text
+6 < 8
+→ go left
+```
+
+At `4`:
+
+```text
+6 > 4
+→ go right
+```
+
+Found `6`.
+
+We don't need to inspect every node.
+
+---
+
+# 18. BST Complexity
+
+For a balanced BST:
+
+```text
+Search → O(log N)
+Insert → O(log N)
+Delete → O(log N)
+```
+
+But a BST can become skewed:
+
+```text
+1
+ \
+  2
+   \
+    3
+     \
+      4
+```
+
+Then:
+
+```text
+Search → O(N)
+Insert → O(N)
+Delete → O(N)
+```
+
+So **BST does not automatically mean O(log N)**.
+
+It depends on the tree's height.
+
+---
+
+# 19. Important BST Property
+
+### Inorder Traversal of a BST
+
+```text
+Left → Root → Right
+```
+
+produces elements in **sorted order**.
+
+Example:
+
+```text
+          8
+        /   \
+       4     12
+      / \    / \
+     2   6  10 14
+```
+
+Inorder:
+
+```text
+2 4 6 8 10 12 14
+```
+
+Therefore:
+
+> **Inorder traversal of a valid BST gives sorted order.**
+
+---
+
+# 20. Tree → Binary Tree → BST
+
+Keep this hierarchy in your head:
+
+```text
+GRAPH
+  │
+  │ connected + undirected + acyclic
+  ↓
+TREE
+  │
+  │ at most 2 children
+  ↓
+BINARY TREE
+  │
+  │ ordering property
+  ↓
+BST
+```
+
+Each step adds restrictions.
+
+---
+
+# 21. DFS vs BFS in Trees
+
+Trees can be traversed using:
+
+### DFS
+
+Depth First Search.
+
+Common tree traversals:
+
+```text
+Preorder
+Inorder
+Postorder
+```
+
+DFS can be implemented using:
+
+```text
+Recursion
+Stack
+```
+
+### BFS
+
+Breadth First Search.
+
+Usually:
+
+```text
+Level Order Traversal
+```
+
+Uses:
+
+```text
+Queue
+```
+
+---
+
+# 22. Traversal Orders
+
+For:
+
+```text
+        A
+       / \
+      B   C
+     / \
+    D   E
+```
+
+### Preorder
+
+```text
+Root → Left → Right
+```
+
+```text
+A B D E C
+```
+
+### Inorder
+
+```text
+Left → Root → Right
+```
+
+```text
+D B E A C
+```
+
+### Postorder
+
+```text
+Left → Right → Root
+```
+
+```text
+D E B C A
+```
+
+### Level Order
+
+```text
+Level by level
+```
+
+```text
+A B C D E
+```
+
+---
+
+# 23. EY Theory Questions — Must Prepare
+
+## Basic
+
+* What is a tree?
+* Why is a tree a special type of graph?
+* What is the root?
+* What is a leaf node?
+* What is an internal node?
+* What is a parent?
+* What is a child?
+* What are siblings?
+* What is an edge?
+* What is a subtree?
+
+## Tree Properties
+
+* How many edges does a tree with `N` nodes have?
+* Can a tree contain a cycle?
+* Can a tree be disconnected?
+* How many paths exist between two nodes in a tree?
+* How do you identify whether an undirected graph is a tree?
+
+## Binary Tree
+
+* What is a binary tree?
+* How many children can a binary-tree node have?
+* Difference between a general tree and binary tree.
+* What is a full binary tree?
+* What is a complete binary tree?
+* What is a perfect binary tree?
+* What is a balanced tree?
+
+## BST
+
+* What is a BST?
+* Difference between Binary Tree and BST.
+* What is the BST property?
+* Why is BST useful?
+* What is the complexity of searching in a BST?
+* Why can BST search become `O(N)`?
+* Why does inorder traversal of a BST produce sorted order?
+
+## Traversals
+
+* What is DFS?
+* What is BFS?
+* Explain preorder.
+* Explain inorder.
+* Explain postorder.
+* Explain level order.
+* Which data structure is used for BFS?
+* Which data structure can be used for iterative DFS?
+* Why is inorder traversal special for BST?
+
+---
+
+# 24. EY Priority
+
+### 🔥 MUST KNOW
+
+```text
+Tree definition
+Tree properties
+N nodes → N-1 edges
+Connected + acyclic
+Unique path
+Tree terminology
+Binary Tree
+Full / Complete / Perfect
+BST
+Binary Tree vs BST
+BST complexity
+Preorder
+Inorder
+Postorder
+Level Order
+```
+
+### 🟡 KNOW CONCEPTUALLY
+
+```text
+Balanced Tree
+Skewed Tree
+Why BST becomes O(N)
+Subtree
+Depth vs Height
+```
+
+### 🟢 LOW PRIORITY FOR EY
+
+Don't spend serious preparation time on:
+
+```text
+AVL Tree
+Red-Black Tree
+Segment Tree
+Fenwick Tree
+Morris Traversal
+B-Tree
+B+ Tree
+Threaded Binary Tree
+```
+
+Unless they appear specifically in your job description or assessment.
+
+---
+
+# 🧠 Final Mental Model
+
+Remember this:
+
+```text
+                 GRAPH
+                   │
+        Connected + No Cycle
+                   ↓
+                 TREE
+                   │
+           Max 2 children
+                   ↓
+             BINARY TREE
+                   │
+          Ordering property
+                   ↓
+                  BST
+```
+
+And these **5 facts** should come instantly in an interview:
+
+```text
+1. Tree = connected + acyclic undirected graph
+
+2. N nodes → N - 1 edges
+
+3. Exactly one path between any two nodes
+
+4. Binary Tree → at most 2 children
+
+5. BST → Left < Root < Right
+```
+
+> **For EY, master these fundamentals first. Then move to traversal coding and basic tree problems. Don't over-study advanced trees.**
